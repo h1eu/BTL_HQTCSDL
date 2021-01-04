@@ -1,5 +1,5 @@
 <div class="gd_table">
-        <h2 class="table-name">Giải Đấu Đấu</h2>
+        <h2 class="table-name">Giải Đấu</h2>
         <?php
                 $sql="Select * from GIAIDAU";
                 $result=sqlsrv_query($conn,$sql);
@@ -12,6 +12,7 @@
                     <th>Địa Điểm</th>
                     <th>Thời gian bắt đầu</th>
                     <th>Thời gian kết thúc</th>
+                    <th>Tổng số trận</th>
                 </tr>
             </thead>
             <tbody>
@@ -21,6 +22,7 @@
                     <td><?php echo $League['DiaDiem'];?></td>
                     <td><?php echo $Date = $League['TGBatDau']->format('H:m d/m/Y');?></td>
                     <td><?php echo $Date = $League['TGKetThuc']->format('H:m d/m/Y');?></td>
+                    <td><?php echo $League['TongTran'];?></td>
                 </tr>
                 <?php endforeach;?>
             </tbody>

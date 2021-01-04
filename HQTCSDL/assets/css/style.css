@@ -1,0 +1,23 @@
+.tt_table{
+    display: none;
+}
+.td_table{
+    display: none;
+}
+.bd_table{
+    display: none;
+}
+
+
+
+canvas{
+    border:1px solid #444444;
+}
+/* 
+canvas {
+
+    cursor: crosshair;
+
+    display: block;
+
+} */

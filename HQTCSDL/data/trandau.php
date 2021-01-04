@@ -1,4 +1,4 @@
-<div class="td_table d-none">
+<div class="td_table">
         <h2 class="table-name">Thông tin Trận Đấu</h2>
         <?php
                 $sql="Select * from TRANDAU";

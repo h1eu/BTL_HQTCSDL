@@ -3,20 +3,22 @@ USE QLGD;
 CREATE TABLE TUYENTHU
 (
 	MaTT INT IDENTITY(1,1) PRIMARY KEY,
-	Ten NVARCHAR(30),
+	Ten NVARCHAR(30) not null,
 	NgaySinh DATE,
 	HeSo FLOAT,
-	QuocGia NVARCHAR(30),
+	QuocGia NVARCHAR(30) not null,
 );
 USE QLGD;
 CREATE TABLE GIAIDAU
 (
 	MaGD INT IDENTITY(1,1) PRIMARY KEY,
-	TenGD NVARCHAR(30),
-	DiaDiem NVARCHAR(30),
-	TGBatDau DATE,
-	TGKetThuc DATE
+	TenGD NVARCHAR(30) not null,
+	DiaDiem NVARCHAR(30) not null,
+	TGBatDau DATE not null,
+	TGKetThuc DATE not null,
+	TongTran int not null
 );
+drop table BANGDIEM,TRANDAU,GIAIDAU,TUYENTHU
 USE QLGD;
 CREATE TABLE TRANDAU
 (
@@ -31,6 +33,7 @@ CREATE TABLE TRANDAU
 	FOREIGN KEY (MaTT2) REFERENCES dbo.TUYENTHU(MaTT)
 );
 ALTER TABLE dbo.TRANDAU ADD DEFAULT N'Chưa' FOR Kq;
+ALTER TABLE dbo.GIAIDAU ADD DEFAULT 32 FOR TongTran;
 USE QLGD;
 CREATE TABLE BANGDIEM
 (
@@ -42,6 +45,18 @@ CREATE TABLE BANGDIEM
 	Diem INT,
 	FOREIGN KEY (MATT) REFERENCES dbo.TUYENTHU (MaTT)
 );
+
+USE QLGD
+CREATE TABLE ACCOUNT
+(
+	Id int identity(1,1) PRIMARY KEY,
+	username nvarchar(35) not null,
+	pass nvarchar(35) not null,
+	email nvarchar(45) not null,
+	role int default 1,
+	gold int default 10000
+)
+
 
 INSERT INTO dbo.TUYENTHU
 (
@@ -67,13 +82,15 @@ INSERT INTO dbo.GIAIDAU
 	TenGD,
 	DiaDiem,
 	TGBatDau,
-	TGKetThuc
+	TGKetThuc,
+	TongTran
 )
 VALUES
 (   N'Bích Quế Viên Bôi',       -- TenGD - nvarchar(30)
     N'Trung Của',       -- DiaDiem - nvarchar(30)
     GETDATE(), -- TGBatDau - date
-    GETDATE()  -- TGKetThuc - date
+    GETDATE(),  -- TGKetThuc - date
+	32
 )
 
 INSERT INTO dbo.TRANDAU
@@ -89,3 +106,45 @@ VALUES
     2,         -- MaTT2 - int
     GETDATE() -- TGBD - datetime
 )
+
+insert into BANGDIEM
+(
+	MATT,
+	TranThang,
+	TranThua,
+	TranHoa,
+	HieuSo,
+	Diem
+)
+values
+(
+	1,
+	1,
+	0,
+	1,
+	1,
+	3
+),(
+	2,
+	0,
+	1,
+	1,
+	1,
+	1
+)
+
+insert into ACCOUNT
+(
+	username,
+	pass,
+	email
+)
+values
+(
+	N'hieus207',
+	'hieu1233',
+	'hieus207@gmail.com'
+)
+
+select * from BANGDIEM
+INSERT INTO GIAIDAU ( TenGD, DiaDiem, TGBatDau, TGKetThuc, TongTran ) VALUES (null,null,'2020/10/10','2020/10/10', 32)
