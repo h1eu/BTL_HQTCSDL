@@ -7,6 +7,10 @@ CREATE TABLE TUYENTHU
 	NgaySinh DATE,
 	HeSo FLOAT,
 	QuocGia NVARCHAR(30) not null,
+	username nvarchar(35) not null,
+	pass nvarchar(35) not null,
+	email nvarchar(45) not null,
+	role int default 1
 );
 USE QLGD;
 CREATE TABLE GIAIDAU
@@ -18,7 +22,17 @@ CREATE TABLE GIAIDAU
 	TGKetThuc DATE not null,
 	TongTran int not null
 );
-drop table BANGDIEM,TRANDAU,GIAIDAU,TUYENTHU
+--drop table BANGDIEM,TRANDAU,GIAIDAU,TUYENTHU
+
+USE QLGD;
+CREATE TABLE TTGIAIDAU
+(
+	MaGD int not null,
+	MaTT int not null,
+	FOREIGN KEY(MaGD) REFERENCES dbo.GIAIDAU(MaGD),
+	FOREIGN KEY (MaTT) REFERENCES dbo.TUYENTHU(MaTT)
+)
+
 USE QLGD;
 CREATE TABLE TRANDAU
 (
@@ -37,44 +51,51 @@ ALTER TABLE dbo.GIAIDAU ADD DEFAULT 32 FOR TongTran;
 USE QLGD;
 CREATE TABLE BANGDIEM
 (
-	MATT INT ,
+	MATT INT not null PRIMARY KEY,
 	TranThang INT,
 	TranThua INT,
 	TranHoa INT,
 	HieuSo INT,
 	Diem INT,
-	FOREIGN KEY (MATT) REFERENCES dbo.TUYENTHU (MaTT)
+	MaGD INT not null,
+	FOREIGN KEY (MATT) REFERENCES dbo.TUYENTHU (MaTT),
+	FOREIGN KEY (MaGD) REFERENCES dbo.GIAIDAU (MaGD)
 );
 
-USE QLGD
+/*USE QLGD
 CREATE TABLE ACCOUNT
 (
 	Id int identity(1,1) PRIMARY KEY,
-	username nvarchar(35) not null,
-	pass nvarchar(35) not null,
-	email nvarchar(45) not null,
-	role int default 1,
+	
 	gold int default 10000
 )
-
-
+*/
 INSERT INTO dbo.TUYENTHU
 (
     Ten,
 	NgaySinh,
 	HeSo,
-	QuocGia
+	QuocGia,
+	username,
+	pass,
+	email
 )
 VALUES
 (   N'Lê Văn B',       -- TenTT - nvarchar(41)
     GETDATE(), -- NgaySinh - date
     300,       -- HsElo - float
-    N'Hải Phòng'        -- Que - nvarchar(50)
+    N'Hải Phòng',        -- Que - nvarchar(50)
+	'hieus207',
+	'hieu123',
+	'hieutr@gmail.com'
     ),(
 		N'Nguyễn Cuốc Huy',       -- TenTT - nvarchar(41)
     GETDATE(), -- NgaySinh - date
     300,       -- HsElo - float
-    N'Hải Phòng' 
+    N'Hải Phòng',
+	'huyhayho',
+	'huy123',
+	'huytrk@gm.com'
 	)
 
 INSERT INTO dbo.GIAIDAU
@@ -114,7 +135,8 @@ insert into BANGDIEM
 	TranThua,
 	TranHoa,
 	HieuSo,
-	Diem
+	Diem,
+	MaGD
 )
 values
 (
@@ -123,28 +145,21 @@ values
 	0,
 	1,
 	1,
-	3
+	3,
+	1
 ),(
 	2,
 	0,
 	1,
 	1,
 	1,
+	1,
 	1
 )
 
-insert into ACCOUNT
-(
-	username,
-	pass,
-	email
-)
-values
-(
-	N'hieus207',
-	'hieu1233',
-	'hieus207@gmail.com'
-)
 
 select * from BANGDIEM
 INSERT INTO GIAIDAU ( TenGD, DiaDiem, TGBatDau, TGKetThuc, TongTran ) VALUES (null,null,'2020/10/10','2020/10/10', 32)
+
+
+create procedure BangXH
