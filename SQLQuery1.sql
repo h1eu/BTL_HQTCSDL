@@ -15,6 +15,7 @@ CREATE TABLE TUYENTHU
 USE QLGD;
 CREATE TABLE GIAIDAU
 (
+--Tổng số tuyển thủ tham gia?
 	MaGD INT IDENTITY(1,1) PRIMARY KEY,
 	TenGD NVARCHAR(30) not null,
 	DiaDiem NVARCHAR(30) not null,
