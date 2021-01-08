@@ -33,6 +33,38 @@
                 <li class="nav-item active">
                     <a class="nav-link" href="#">Rule</a>
                 </li>
+                <li class="nav-item active">
+                    <!-- Button trigger modal -->
+                    <button type="button" class="btn btn-primary btn-lg" data-toggle="modal" data-target="#modelId">
+                      Login
+                    </button>
+                    
+                    <!-- Modal -->
+                    <div class="modal fade" id="modelId" tabindex="-1" role="dialog" aria-labelledby="modelTitleId" aria-hidden="true">
+                        <div class="modal-dialog" role="document">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title">Login an Account</h5>
+                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                            <span aria-hidden="true">&times;</span>
+                                        </button>
+                                </div>
+                                <div class="modal-body">
+                                    <div class="form-group">
+                                      <label>Username</label>
+                                      <input type="text" class="form-control" id="usname" aria-describedby="helpId" placeholder="username...">
+                                      <label>Password</label>
+                                      <input type="text" class="form-control" id="pass" aria-describedby="helpId" placeholder="password...">
+                                    </div>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                    <button type="button" id="login" class="btn btn-primary">Login</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </li>
             </ul>
             <!-- <a class="nav-link dropdown-toggle" href="#" id="dropdownId" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Login</a>
                     <div class="dropdown-menu" aria-labelledby="dropdownId">

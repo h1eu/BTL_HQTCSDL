@@ -16,17 +16,8 @@
                     <th>Kết Quả</th> 
                 </tr>
             </thead>
-            <tbody>
-                <?php foreach($rs as $match):?>
-                <tr>
-                    <td><?php echo $match['MaGD'];?></td>
-                    <td><?php echo $match['MaTD'];?></td>
-                    <td><?php echo $match['MaTT1'];?></td>
-                    <td><?php echo $match['MaTT2'];?></td>
-                    <td><?php echo $Date = $match['TGBD']->format('H:m d/m/Y');?></td>
-                    <td><?php echo $match['Kq'];?></td>
-                </tr>
-                <?php endforeach;?>
+            <tbody id="td_body">
+
             </tbody>
         </table>
     </div>

@@ -6,25 +6,15 @@
         <li class="nav-item league">
             <a href="#" class="nav-link active">Giải đấu</a>
         </li>
-        <li class="nav-item match">
-            <a href="#" class="nav-link">Trận Đấu</a>
-        </li>
-        <li class="nav-item player">
-            <a href="#" class="nav-link">Tuyển Thủ</a>
-        </li>
-        <li class="nav-item scboard">
-            <a href="#" class="nav-link">Bảng Điểm</a>
-        </li>
     </ul>
     <!-- Thêm đk rồi mới require sau chăng? -->
-    <?php require_once('./data/tuyenthu.php')?>
-    <?php require_once('./data/trandau.php')?>
     <?php require_once('./data/giaidau.php')?>
     <?php require_once('./data/bangdiem.php')?>
-    <!-- <canvas id="game" width="500" height="500"></canvas> -->
+    <?php require_once('./data/trandau.php')?>
 </div>
 
-
+<!-- tach bang nay ra trang moi lam view tong cua minh -->
+<?php //require_once('./data/tuyenthu.php')?>
 
 <!-- Optional JavaScript -->
 

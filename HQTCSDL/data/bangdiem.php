@@ -16,17 +16,8 @@
                     <th>Điểm</th> 
                 </tr>
             </thead>
-            <tbody>
-                <?php foreach($rs as $tt):?>
-                <tr>
-                    <td><?php echo $tt['MATT'];?></td>
-                    <td><?php echo $tt['TranThang'];?></td>
-                    <td><?php echo $tt['TranThua'];?></td>
-                    <td><?php echo $tt['TranHoa'];?></td>
-                    <td><?php echo $tt['HieuSo'];?></td>
-                    <td><?php echo $tt['Diem'];?></td>
-                </tr>
-                <?php endforeach;?>
+            <tbody id="bd_body">
+                
             </tbody>
         </table>
     </div>
