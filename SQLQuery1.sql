@@ -21,9 +21,11 @@ CREATE TABLE GIAIDAU
 	DiaDiem NVARCHAR(30) not null,
 	TGBatDau DATE not null,
 	TGKetThuc DATE not null,
-	TongTran int not null
+	TongTran int not null,
+	TongTT int not null
 );
---drop table BANGDIEM,TRANDAU,GIAIDAU,TUYENTHU
+
+--drop table BANGDIEM,TRANDAU,GIAIDAU,TUYENTHU,TTGIAIDAU
 
 USE QLGD;
 CREATE TABLE TTGIAIDAU
@@ -31,7 +33,8 @@ CREATE TABLE TTGIAIDAU
 	MaGD int not null,
 	MaTT int not null,
 	FOREIGN KEY(MaGD) REFERENCES dbo.GIAIDAU(MaGD),
-	FOREIGN KEY (MaTT) REFERENCES dbo.TUYENTHU(MaTT)
+	FOREIGN KEY (MaTT) REFERENCES dbo.TUYENTHU(MaTT),
+	PRIMARY KEY (MaGD,MaTT)
 )
 
 USE QLGD;
@@ -43,9 +46,9 @@ CREATE TABLE TRANDAU
 	MaTT2 INT,
 	TGBD DATETIME,
 	Kq NVARCHAR(20)
-	FOREIGN KEY (MaGD) REFERENCES dbo.GIAIDAU(MaGD),
-	FOREIGN KEY(MaTT1) REFERENCES dbo.TUYENTHU(MaTT),
-	FOREIGN KEY (MaTT2) REFERENCES dbo.TUYENTHU(MaTT)
+	FOREIGN KEY (MaGD) REFERENCES GIAIDAU(MaGD),
+	FOREIGN KEY(MaTT1) REFERENCES TUYENTHU(MaTT),
+	FOREIGN KEY (MaTT2) REFERENCES TUYENTHU(MaTT)
 );
 ALTER TABLE dbo.TRANDAU ADD DEFAULT N'Chưa' FOR Kq;
 ALTER TABLE dbo.GIAIDAU ADD DEFAULT 32 FOR TongTran;
@@ -105,14 +108,16 @@ INSERT INTO dbo.GIAIDAU
 	DiaDiem,
 	TGBatDau,
 	TGKetThuc,
-	TongTran
+	TongTran,
+	TongTT
 )
 VALUES
 (   N'Bích Quế Viên Bôi',       -- TenGD - nvarchar(30)
     N'Trung Của',       -- DiaDiem - nvarchar(30)
     GETDATE(), -- TGBatDau - date
     GETDATE(),  -- TGKetThuc - date
-	32
+	32,
+	8
 )
 
 INSERT INTO dbo.TRANDAU
@@ -158,9 +163,48 @@ values
 	1
 )
 
+insert into TTGIAIDAU
+(
+	MaGD,
+	MaTT
+)
+values(
+	1,
+	1
+),(
+	1,
+	2
+)
+select * from GIAIDAU
+
+select * from TUYENTHU
+
+select * from TRANDAU
 
 select * from BANGDIEM
+
+select * from TTGIAIDAU
+--Tham chiếu nhầm khóa của trận đấu
+
 INSERT INTO GIAIDAU ( TenGD, DiaDiem, TGBatDau, TGKetThuc, TongTran ) VALUES (null,null,'2020/10/10','2020/10/10', 32)
 
-
+use QLGD
 create procedure BangXH
+update GIAIDAU SET TenGD='Abc', DiaDiem='def', TGBatDau='2012/12/02', TGKetThuc='2012/12/10', TongTran='32',TongTT='10' WHERE MaGD='2';
+
+update GIAIDAU SET 
+                TenGD='Abcd',
+                DiaDiem='def', 
+                TGBatDau='2012-12-02', 
+                TGKetThuc='2012-12-10', 
+                TongTran='32',
+                TongTT='TongTT' 
+            WHERE MaGD='2';
+
+select * from TRANDAU
+update TRANDAU SET 
+                MaTT1='2', 
+                MaTT2='1', 
+                TGBD='2021-01-08', 
+                Kq=N'Chưa'
+            WHERE MaTD='3';
