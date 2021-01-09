@@ -1,6 +1,7 @@
 <div class="gd_table">
         <h2 class="table-name">Giải Đấu</h2>
         <!-- Button trigger modal -->
+        <?php if(isset($_SESSION['role'])&&$_SESSION['role']==2):?>
         <button type="button" class="btn btn-primary btn-lg" data-toggle="modal" id="create_league1" data-target="#create_league2">
             Thêm Giải Đấu
         </button>
@@ -38,6 +39,7 @@
                 </div>
             </div>
         </div>
+        <?php endif;?>
         <?php
                 $sql="Select * from GIAIDAU";
                 $result=sqlsrv_query($conn,$sql);
@@ -80,7 +82,7 @@
                     <td><button type="button" class="btn btn-primary league_del">Delete</button></td>
                     <?php endif;?>
                     <?php if($_SESSION['role']==1):?>
-                    <td><button type="button" class="btn btn-primary">Enter</button></td>
+                    <td><button type="button" class="btn btn-primary league_enter">Enter</button></td>
                     <?php endif;?>
                     <?php endif;?>
                 </tr>

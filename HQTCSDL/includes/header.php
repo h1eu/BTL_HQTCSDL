@@ -32,10 +32,64 @@
                 </li>
                 <li class="nav-item active">
                     <a class="nav-link" href="#">Rule</a>
+                </li class="nav-item active">
+                <?php if(isset($_SESSION['role'])):?>
+                    <span class="nav-link" style="color:yellow">Hi, <?php echo $_SESSION['username'];?></span> <button type="button" class="btn btn-primary logout">Logout</button>
+                <?php else:?>
+                <li class="nav-item active">
+                    <!-- Button trigger modal -->
+                    <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#signup1">
+                      Sign Up
+                    </button>
+                    
+                    <!-- Modal -->
+                    <div class="modal fade" id="signup1" tabindex="-1" role="dialog" aria-labelledby="modelTitleId" aria-hidden="true">
+                        <div class="modal-dialog" role="document">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title">Sign up an Account</h5>
+                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                            <span aria-hidden="true">&times;</span>
+                                        </button>
+                                </div>
+                                <div class="modal-body">
+                                    <div class="form-group">
+                                    <!-- Ten,
+                                    NgaySinh,
+                                    HeSo,
+                                    QuocGia,
+                                    username,*
+                                    pass,*
+                                    email -->
+                                      <label>Username</label>
+                                      <input type="text" class="form-control" id="su_usname" aria-describedby="helpId" placeholder="username...">
+                                      <label>Password</label>
+                                      <input type="password" class="form-control" id="su_pass" aria-describedby="helpId" placeholder="password...">
+                                      <label>Confirm Password</label>
+                                      <input type="password" class="form-control" id="su_cfpass" aria-describedby="helpId" placeholder="confirm password...">
+                                      <label>Email</label>
+                                      <input type="email" class="form-control" id="su_email" aria-describedby="helpId" placeholder="...">
+                                      <label>Ten</label>
+                                      <input type="text" class="form-control" id="su_name" aria-describedby="helpId" placeholder="...">
+                                      <label>NgaySinh</label>
+                                      <input type="text" class="form-control" id="su_birthday" aria-describedby="helpId" placeholder="...">
+                                      <label>HeSo</label>
+                                      <input type="text" class="form-control" id="su_elo" aria-describedby="helpId" placeholder="...">
+                                      <label>QuocGia</label>
+                                      <input type="text" class="form-control" id="su_ctry" aria-describedby="helpId" placeholder="...">
+                                    </div>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                    <button type="button" id="signup" class="btn btn-primary">SignUp</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </li>
                 <li class="nav-item active">
                     <!-- Button trigger modal -->
-                    <button type="button" class="btn btn-primary btn-lg" data-toggle="modal" data-target="#modelId">
+                    <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#modelId">
                       Login
                     </button>
                     
@@ -54,7 +108,7 @@
                                       <label>Username</label>
                                       <input type="text" class="form-control" id="usname" aria-describedby="helpId" placeholder="username...">
                                       <label>Password</label>
-                                      <input type="text" class="form-control" id="pass" aria-describedby="helpId" placeholder="password...">
+                                      <input type="password" class="form-control" id="pass" aria-describedby="helpId" placeholder="password...">
                                     </div>
                                 </div>
                                 <div class="modal-footer">
@@ -65,6 +119,8 @@
                         </div>
                     </div>
                 </li>
+                <?php endif;?>
+                
             </ul>
             <!-- <a class="nav-link dropdown-toggle" href="#" id="dropdownId" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Login</a>
                     <div class="dropdown-menu" aria-labelledby="dropdownId">

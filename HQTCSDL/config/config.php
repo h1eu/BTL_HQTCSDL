@@ -15,7 +15,7 @@ if( $conn ) {
 
 function sqlsrv_fetch_all($result){
      $rs=array();
-     while($row = sqlsrv_fetch_array( $result, SQLSRV_FETCH_ASSOC )){ 
+     while($row = sqlsrv_fetch_array( $result, SQLSRV_FETCH_ASSOC)){ 
           array_push($rs,$row);
      }
      // if(count($rs)==0) return false;

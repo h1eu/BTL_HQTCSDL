@@ -11,6 +11,7 @@
             $result=sqlsrv_query($conn,$sql);
             $rs=sqlsrv_fetch_all($result);
             if(count($rs)!=0){
+                $_SESSION['MaTT']=$rs[0]['MaTT'];
                 $_SESSION['username']=$rs[0]['username'];
                 $_SESSION['role']=$rs[0]['role'];
                 $kq['log']=true;

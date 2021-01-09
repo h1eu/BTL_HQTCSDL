@@ -13,11 +13,15 @@
                     <th>Số Trận Thua</th>
                     <th>Số Trận Hòa</th>
                     <th>Hiệu Số</th>
-                    <th>Điểm</th> 
+                    <th>Điểm</th>
+                    <?php if(isset($_SESSION['role'])):?>
+                    <?php if($_SESSION['role']==2):?>
+                    <th id="scboard_action">Action<th>
+                    <?php endif;?>
+                    <?php endif;?>
                 </tr>
             </thead>
             <tbody id="bd_body">
-                
             </tbody>
         </table>
     </div>

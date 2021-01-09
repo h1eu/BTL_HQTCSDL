@@ -3,7 +3,7 @@
         if(isset($_POST['maGD'])){
             global $conn;
             $MaGD=$_POST['maGD'];
-            $sql="SELECT MaTT,Ten From TUYENTHU WHERE MaTT in (select MaTT from TTGIAIDAU WHERE MaGD='$MaGD')";
+            $sql="SELECT * From TUYENTHU WHERE MaTT in (select MATT from BANGDIEM WHERE MaGD='$MaGD')";
             $result=sqlsrv_query($conn,$sql);
             $rs=sqlsrv_fetch_all($result);         
         }

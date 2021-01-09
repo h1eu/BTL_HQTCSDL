@@ -11,12 +11,41 @@ $('#login').click(function(){
         },
         dataType: 'json',
         success:function(response){
-            if(response['log']===true) console.log("dang nhap thanh cong");
-            else console.log("dang nhap that bai");
+            if(response['log']===true) location.reload();
+            else alert("dang nhap that bai");
         }
     });
 })
 
+$('#signup').click(function(){
+    let usname=$('#su_usname').val();
+    let pass=$('#su_pass').val();
+    let cfpass=$('#su_cfpass').val();
+    let email=$('#su_email').val();
+    let name=$('#su_name').val();
+    let elo=$('#su_elo').val();
+    let birthday=$('#su_birthday').val();
+    let ctry=$('#su_ctry').val();
+    if(pass!=cfpass) alert("Pass bạn nhập không trùng nhau!")
+    else
+    $.ajax({
+        url: 'signup.php',
+        type: 'post',
+        data: {
+            username:usname,
+            password:pass,
+            email:email,
+            name:name,
+            elo:elo,
+            birthday:birthday,
+            ctry:ctry
+        },
+        dataType: 'json',
+        success:function(response){
+            console.log("OK")
+        }
+    });
+})
 $('.show').click(function(){
     if($(this).val()=="Show"){
         $('.td_table').show();
@@ -33,15 +62,37 @@ $('.show').click(function(){
             dataType: 'json',
             success:function(response){
                 $("#bd_body").empty();
+                let action="";
                     for(data of response)
-                    $("#bd_body").append("<tr>"+
-                    "<td>"+data['MATT']+"</td>"+
-                    "<td>"+data['TranThang']+"</td>"+
-                    "<td>"+data['TranThua']+"</td>"+
-                    "<td>"+data['TranHoa']+"</td>"+
-                    "<td>"+data['HieuSo']+"</td>"+
-                    "<td>"+data['Diem']+"</td>"+
-                    +"</tr>");
+                    {
+                        if($('.bd_table').children().eq(1).children().eq(0).children().eq(0).children().length>6){
+                            action="<td> <button type='button' class='btn btn-primary scboard_del'> Del </button> </td>";
+                        }
+                        $("#bd_body").append("<tr>"+
+                        "<td scope='row'>"+data['MATT']+"</td>"+
+                        "<td>"+data['TranThang']+"</td>"+
+                        "<td>"+data['TranThua']+"</td>"+
+                        "<td>"+data['TranHoa']+"</td>"+
+                        "<td>"+data['HieuSo']+"</td>"+
+                        "<td>"+data['Diem']+"</td>"+
+                        action
+                        +"</tr>");
+                    }
+
+                $('.scboard_del').click(function(){
+                    let MaTT=$(this).parent().parent().children().eq(0)[0].textContent;
+                    $.ajax({
+                        url: 'del_tt.php',
+                        type: 'post',
+                        data: {
+                            MaTT:MaTT
+                        },
+                        dataType: 'json',
+                        success:function(response){
+                            console.log(response)
+                        }
+                    })
+                })
                     
             }
         })
@@ -58,12 +109,12 @@ $('.show').click(function(){
                 let action="";
                 
                 for(data of response){
-                    if($('#match_action')[0].textContent=="Action"){
+                    if($('.td_table').children().eq(3).children().eq(0).children().eq(0).children().length>6){
                         action="<td> <button type='button' class='btn btn-primary match_edit' onClick=(match_edit("+data['MaGD']+","+data['MaTD']+"))> Edit </button> </td>"+
                         "<td> <button type='button' class='btn btn-primary match_del' onClick=(match_del("+data['MaTD']+"))> Del </button> </td>";
                     }
                     $("#td_body").append("<tr>"+
-                    "<td>"+data['MaGD']+"</td>"+
+                    "<td scope='row'>"+data['MaGD']+"</td>"+
                     "<td>"+data['MaTD']+"</td>"+
                     "<td>"+data['MaTT1']+"</td>"+
                     "<td>"+data['MaTT2']+"</td>"+
@@ -75,7 +126,6 @@ $('.show').click(function(){
                 
             }
         })
-        
     }
     else{
         $('.td_table').hide();
@@ -311,3 +361,35 @@ function match_del(MaTD){
         }
     })
 }
+
+$('.league_enter').click(function(){
+    //insert
+    //lay ma gd
+    let MaGD=$(this).parents().eq(1).children().eq(6).children().eq(0).val();
+    $.ajax({
+        url: 'enter_gd.php',
+        type: 'post',
+        data: {
+            MaGD:MaGD
+        },
+        dataType: 'json',
+        success:function(response){
+            console.log(response[0]);
+        }
+    })
+})
+
+$('.logout').click(function(){
+    $.ajax({
+        url: './function/logout.php',
+        type: 'post',
+        data: {
+            out:'ok'
+        },
+        dataType: 'json',
+        success:function(response){
+            if(response['status']=="success") location.reload();
+            else alert("Đăng xuất thất bại!")
+        }
+    })
+})

@@ -1,5 +1,6 @@
 <div class="td_table">
         <h2 class="table-name">Thông tin Trận Đấu</h2>
+        <?php if(isset($_SESSION['role'])&&$_SESSION['role']==2):?>
         <button type="button" id="create_match1" class="btn btn-primary btn-lg" data-toggle="modal" data-target="#create_match2">
             Thêm Trận Đấu
         </button>
@@ -40,7 +41,7 @@
                 </div>
             </div>
         </div>
-
+        <?php endif;?>
         <table class="table">
             <thead>
                 <tr>
