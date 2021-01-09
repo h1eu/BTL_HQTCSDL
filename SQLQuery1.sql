@@ -208,3 +208,95 @@ update TRANDAU SET
                 TGBD='2021-01-08', 
                 Kq=N'Chưa'
             WHERE MaTD='3';
+			--Tạo một thủ tục đưa ra danh sách các tuyển thủ đã có 3 trận thắng trong một giải đấu bất kì
+create procedure ds_tuyenthu @tenGD nvarchar(30)
+as 
+begin
+select TTGIAIDAU.MaGD ,TUYENTHU.MaTT ,TUYENTHU.Ten ,TUYENTHU.QuocGia from TTGIAIDAU inner join GIAIDAU on TTGIAIDAU.MaGD = GIAIDAU.MAGD
+inner join BANGDIEM on TTGIAIDAU.MaTT = BANGDIEM.MaTT
+inner join TUYENTHU on TTGIAIDAU.MaTT=TUYENTHU.MaTT
+Where GIAIDAU.TenGD =@tenGD and
+BANGDIEM.TranThang >3
+end
+--drop procedure ds_tuyenthu
+exec ds_tuyenthu @tenGD='Bích Quế Viên Bôi'
+--Viết một thủ tục hiển thị ra danh sách tuyển thủ của một giải đấu nào đó
+create procedure ds_tt_gd @tengd nvarchar(30)
+as
+begin
+select TTGIAIDAU.MATT,TUYENTHU.Ten ,TUYENTHU.QuocGia from TTGIAIDAU inner join GIAIDAU on TTGIAIDAU.MaGD = GIAIDAU.MaGD
+inner join TUYENTHU on TTGIAIDAU.MATT = TUYENTHU.MaTT
+Where GIAIDAU.TenGD =@tengd
+end
+exec ds_tt_gd @tengd ='Bích Quế Viên Bôi'
+-- Viết hàm trả về danh sách các tuyển thủ có hiệu số >=2 của 1 giải đấu bất kì
+create function ds_tt_hs ( @magd int)
+returns @dstt TABLE (MaTT int ,Ten nvarchar(30) ,QuocGia nvarchar(30) ,NgaySinh date)
+as
+begin
+insert into @dstt
+Select TUYENTHU.MaTT,TUYENTHU.Ten,TUYENTHU.QuocGia,TUYENTHU.NgaySinh from TUYENTHU inner join BANGDIEM on TUYENTHU.MaTT=BANGDIEM.MaTT
+where BANGDIEM.MaGD =@magd
+and BANGDIEM.HieuSo >=2
+return
+end
+select * from ds_tt_hs(1)
+-- Viết hàm trả về tuổi trung bình của các tuyển thủ trong một giải đấu
+create function tuoi_tb (@magd int)
+returns float
+as
+begin
+declare @tuoi float
+declare @tuoitb float
+set @tuoi = (select Year(getdate())-Year(TUYENTHU.NgaySinh) from TUYENTHU
+inner join TTGIAIDAU on TUYENTHU.MaTT=TTGIAIDAU.MaTT
+where TTGIAIDAU.MaGD=@magd)
+set @tuoitb = avg(@tuoi)
+return @tuoitb
+end
+print (dbo.tuoi_tb(1))
+--cần sửa lại
+--drop function tuoi_tb
+-- Tạo view hiển  thị mã tuyển thủ,tên tuyển thủ,quốc gia ,ngày dinh ,Diem trong  giải đấu
+create view viewTT(MaTT,Ten,QuocGia,NgaySinh,Diem)
+as
+select TUYENTHU.MaTT,TUYENTHU.Ten,TUYENTHU.QuocGia,TUYENTHU.NgaySinh,BANGDIEM.Diem from TUYENTHU
+inner join BANGDIEM on TUYENTHU.MaTT=BANGDIEM.MaTT
+select * from viewTT
+-- Tạo view hiển thị mã giải đấu , tên tuyển thủ  , quốc gia số trận thắng , số trận hòa , số trận thua , hiệu số , điểm số của các tuyển thủ tham gia vào giải đấu
+create view viewGD (MaGD,TenTT,QuocGia,TranThang,TranHoa,TranThua,Hieuso,Diem)
+as
+select BANGDIEM.MaGD,TUYENTHU.Ten,TUYENTHU.QUOCGIA,BANGDIEM.TranThang,BANGDIEM.TranHoa,BANGDIEM.TranThua,BANGDIEM.HieuSo,BANGDIEM.Diem from TUYENTHU
+inner join BANGDIEM on TUYENTHU.MaTT=BANGDIEM.MaTT
+
+
+--drop view viewGD
+select * from viewGD
+
+--Tạo trigger ktra nếu giải đấu có số tuyển thủ tham gia đã đủ thì không cho phép thêm tuyển thủ vào giải đấu nữa
+create trigger tra_sl_tt 
+on GIAIDAU
+FOR insert
+as
+declare @sltt int
+declare @ttdadk int
+select TTGIAIDAU.MaGD,TTGIAIDAU.MaTT,GIAIDAU.TongTT from TTGIAIDAU inner join GIAIDAU on TTGIAIDAU.MAGD =GIAIDAU.MaGD
+group by (TTGIAIDAU.MaGD)
+set @sltt = GIAIDAU.TongTT
+set @ttdk = cout(TTGIAIDAU.MaTT)
+if(@ttdk>=@sltt)
+begin
+print('Giải đấu đã đủ tuyển thủ tham gia')
+rollback tran
+end
+select * from GIAIDAU
+-- Tạo trigger sao cho khi xóa 1 giải đấu trong bảng giải đấu , thì thông tin về bảng điểm của giải đấu đó cũng bị xóa
+create trigger xoa_gd 
+on GIAIDAU
+FOR DELETE
+AS
+BEGIN
+DELETE FROM BANGDIEM
+WHERE MaGD= (select MaGD from DELETED)
+PRINT N'Xóa thành công '
+end
