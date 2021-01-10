@@ -8,7 +8,8 @@
         <table class="table">
             <thead>
                 <tr>
-                    <th>Mã Tuyển Thủ</th>
+                    <th>Mã</th>
+                    <th>Tên Tuyển Thủ</th>
                     <th>Số Trận Thắng</th>
                     <th>Số Trận Thua</th>
                     <th>Số Trận Hòa</th>

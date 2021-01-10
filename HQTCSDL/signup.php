@@ -1,5 +1,6 @@
 <?php
     require_once('./config/config.php');
+    $kq['status']="fail";
     if(!isset($_SESSION['role']))
     {
         if(isset($_POST['username'])&&notNull($_POST)){
@@ -32,9 +33,9 @@
                 '$email'
             )";
             if(sqlsrv_query($conn,$sql))
-            echo "success";
-            else echo "fail"; 
+            $kq['status']="success";
         }
     }
+    echo json_encode($kq);
 
     

@@ -11,8 +11,16 @@ $('#login').click(function(){
         },
         dataType: 'json',
         success:function(response){
-            if(response['log']===true) location.reload();
-            else alert("dang nhap that bai");
+            if(response['status']=='success'){
+                $('.message').text("Đăng nhập thành công!Bạn sẽ được tự động đăng nhập sau 2s");
+                $('.close').click();
+                $('.message').show();
+                setTimeout(function(){
+                    $('.message').hide();
+                    location.reload();
+                },2500);
+            }
+            else alert("Đăng nhập thất bại! Sai tên tài khoản hoặc mật khẩu");
         }
     });
 })
@@ -42,7 +50,16 @@ $('#signup').click(function(){
         },
         dataType: 'json',
         success:function(response){
-            console.log("OK")
+            if(response['status']=='success'){
+                $('.message').text("Đăng ký thành công!");
+                $('.close').click();
+                $('.message').show();
+                setTimeout(function(){
+                    $('.message').hide();
+                },2500);
+            }
+            else
+            alert("Đăng ký thất bại! Kiểm tra lại dữ liệu nhập vào.")
         }
     });
 })
@@ -54,7 +71,7 @@ $('.show').click(function(){
         $(this).val('Close');
         maGD=$(this).parent().contents()[0].value;
         $.ajax({
-            url: 'get_bd.php',
+            url: './function/get_bd.php',
             type: 'post',
             data: {
                 MaGD:maGD
@@ -65,11 +82,12 @@ $('.show').click(function(){
                 let action="";
                     for(data of response)
                     {
-                        if($('.bd_table').children().eq(1).children().eq(0).children().eq(0).children().length>6){
+                        if($('.bd_table').children().eq(1).children().eq(0).children().eq(0).children().length>7){
                             action="<td> <button type='button' class='btn btn-primary scboard_del'> Del </button> </td>";
                         }
                         $("#bd_body").append("<tr>"+
                         "<td scope='row'>"+data['MATT']+"</td>"+
+                        "<td>"+data['Ten']+"</td>"+
                         "<td>"+data['TranThang']+"</td>"+
                         "<td>"+data['TranThua']+"</td>"+
                         "<td>"+data['TranHoa']+"</td>"+
@@ -81,15 +99,25 @@ $('.show').click(function(){
 
                 $('.scboard_del').click(function(){
                     let MaTT=$(this).parent().parent().children().eq(0)[0].textContent;
+                    if(confirm("Bạn có chắc muốn xóa tuyển thủ này khỏi giải đấu?"))
                     $.ajax({
-                        url: 'del_tt.php',
+                        url: './function/del_tt.php',
                         type: 'post',
                         data: {
                             MaTT:MaTT
                         },
                         dataType: 'json',
                         success:function(response){
-                            console.log(response)
+                            if(response['status']=='success'){
+                                $('.message').text("Xóa tuyển thủ thành công!");
+                                $('.message').show();
+                                setTimeout(function(){
+                                    $('.message').hide();
+                                    window.location.reload();
+                                },2000);
+                            }else{
+                                alert("Xóa thất bại!")
+                            }
                         }
                     })
                 })
@@ -98,7 +126,7 @@ $('.show').click(function(){
         })
     
         $.ajax({
-            url: 'get_td.php',
+            url: './function/get_td.php',
             type: 'post',
             data: {
                 MaGD:maGD
@@ -116,8 +144,8 @@ $('.show').click(function(){
                     $("#td_body").append("<tr>"+
                     "<td scope='row'>"+data['MaGD']+"</td>"+
                     "<td>"+data['MaTD']+"</td>"+
-                    "<td>"+data['MaTT1']+"</td>"+
-                    "<td>"+data['MaTT2']+"</td>"+
+                    "<td>"+data['Ten1']+"</td>"+
+                    "<td>"+data['Ten2']+"</td>"+
                     "<td>"+data['TGBD'].date.slice(0,11)+"</td>"+
                     "<td>"+data['Kq']+"</td>"+
                     action
@@ -154,7 +182,7 @@ $('#create_league').click(function(){
     let TongTran=$('#TongTran').val();
     let TongTT=$('#TongTT').val();
     $.ajax({
-        url: 'create_gd.php',
+        url: './function/create_gd.php',
         type: 'post',
         data: {
             TenGD:TenGD,
@@ -166,14 +194,24 @@ $('#create_league').click(function(){
         },
         dataType: 'json',
         success:function(response){
-            console.log(response+"ghahahah");
+            if(response['status']=='success'){
+                $('.message').text("Thêm giải đấu thành công!");
+                $('.shut').click();
+                $('.message').show();
+                setTimeout(function(){
+                    $('.message').hide();
+                    window.location.reload();
+                },2500);
+            }
+            else
+            alert("Thêm thất bại! Kiểm tra lại dữ liệu nhập vào.")
         }
     })
 })
 
 $('#create_match1').click(function(){
     $.ajax({
-        url: 'get_tt.php',
+        url: './function/get_tt.php',
         type: 'post',
         data: {
             maGD:maGD
@@ -199,7 +237,7 @@ $('#create_match').click(function(){
         let MaTT2=$('#match_tt2').val();
         let TGBD=$('#match_TS').val();
         $.ajax({
-            url: 'create_td.php',
+            url: './function/create_td.php',
             type: 'post',
             data: {
                 maGD:maGD,
@@ -209,7 +247,12 @@ $('#create_match').click(function(){
             },
             dataType: 'json',
             success:function(response){
-                console.log(response+"ghahahah");
+                if(response['status']=='success'){
+                    alert("Thêm thành công!")
+                    window.location.reload();
+                }
+                else
+                alert("Thêm thất bại! Kiểm tra lại dữ liệu nhập vào.")
             }
         })
     }
@@ -220,7 +263,7 @@ $('.league_edit').click(function(){
     let MaGD=$(this).parents().eq(1).children().eq(6).children().eq(0).val();
     maGD=MaGD;
     $.ajax({
-        url: 'get_gd.php',
+        url: './function/get_gd.php',
         type: 'post',
         data: {
             MaGD:MaGD
@@ -245,7 +288,7 @@ $('#edit_league').click(function(){
     let TongTran=$('#TongTran2').val();
     let TongTT=$('#TongTT2').val();
     $.ajax({
-        url: 'edit_gd.php',
+        url: './function/edit_gd.php',
         type: 'post',
         data: {
             MaGD:maGD,
@@ -258,22 +301,42 @@ $('#edit_league').click(function(){
         },
         dataType: 'json',
         success:function(response){
-            console.log("xong");
+            if(response['status']=='success'){
+                $('.message').text("Sửa giải đấu thành công!");
+                $('.close').click();
+                $('.message').show();
+                setTimeout(function(){
+                    $('.message').hide();
+                    window.location.reload();
+                },2500);
+            }
+            else
+            alert("Sửa thất bại! Kiểm tra lại dữ liệu nhập vào.")
         }
     })
 })
 
 $('.league_del').click(function(){
     maGD=$(this).parents().eq(1).children().eq(6).children().eq(0).val();
+    if(confirm("Bạn có chắc muốn xóa giải đấu này?"))
     $.ajax({
-        url: 'del_gd.php',
+        url: './function/del_gd.php',
         type: 'post',
         data: {
             MaGD:maGD
         },
         dataType: 'json',
         success:function(response){
-            console.log(response)
+            if(response['status']=='success'){
+                $('.message').text("Xóa giải đấu thành công!");
+                $('.message').show();
+                setTimeout(function(){
+                    $('.message').hide();
+                    window.location.reload();
+                },2000);
+            }else{
+                alert("Xóa thất bại!")
+            }
         }
     })
 })
@@ -282,7 +345,7 @@ function match_edit(val,MaTD){
     $('.open_ed_td').click();
     maGD=val;
     $.ajax({
-        url: 'get_tt.php',
+        url: './function/get_tt.php',
         type: 'post',
         data: {
             maGD:maGD
@@ -302,7 +365,7 @@ function match_edit(val,MaTD){
     })
 
     $.ajax({
-        url: 'get_td.php',
+        url: './function/get_td.php',
         type: 'post',
         data: {
             MaTD:MaTD
@@ -332,7 +395,7 @@ $('#edit_match').click(function(){
         let MaTD=$('#ed_match_MaTD').val();
         let Kq=$('#ed_match_result').val();
         $.ajax({
-            url: 'edit_td.php',
+            url: './function/edit_td.php',
             type: 'post',
             data: {
                 MaTD:MaTD,
@@ -343,21 +406,41 @@ $('#edit_match').click(function(){
             },
             dataType: 'json',
             success:function(response){
-                console.log(response+"ghahahah");
+                if(response['status']=='success'){
+                    $('.message').text("Sửa trận đấu thành công!");
+                    $('.close').click();
+                    $('.message').show();
+                    setTimeout(function(){
+                        $('.message').hide();
+                        window.location.reload();
+                    },2500);
+                }
+                else
+                alert("Sửa thất bại! Kiểm tra lại dữ liệu nhập vào.")
             }
         })
     }
 })
 function match_del(MaTD){
+    if(confirm("Bạn có chắc muốn xóa trận đấu này?"))
     $.ajax({
-        url: 'del_td.php',
+        url: './function/del_td.php',
         type: 'post',
         data: {
             MaTD:MaTD
         },
         dataType: 'json',
         success:function(response){
-            console.log(response)
+            if(response['status']=='success'){
+                $('.message').text("Xóa trận đấu thành công!");
+                $('.message').show();
+                setTimeout(function(){
+                    $('.message').hide();
+                    window.location.reload();
+                },2000);
+            }else{
+                alert("Xóa thất bại!")
+            }
         }
     })
 }
@@ -367,14 +450,23 @@ $('.league_enter').click(function(){
     //lay ma gd
     let MaGD=$(this).parents().eq(1).children().eq(6).children().eq(0).val();
     $.ajax({
-        url: 'enter_gd.php',
+        url: './function/enter_gd.php',
         type: 'post',
         data: {
             MaGD:MaGD
         },
         dataType: 'json',
         success:function(response){
-            console.log(response[0]);
+            if(response['status']=='success'){
+                $('.message').text("Tham gia giải đấu thành công!");
+                $('.message').show();
+                setTimeout(function(){
+                    $('.message').hide();
+                    window.location.reload();
+                },2500);
+            }
+            else
+            alert("Tham gia thất bại!")
         }
     })
 })
@@ -388,7 +480,9 @@ $('.logout').click(function(){
         },
         dataType: 'json',
         success:function(response){
-            if(response['status']=="success") location.reload();
+            if(response['status']=="success") {
+                location.reload();
+            }
             else alert("Đăng xuất thất bại!")
         }
     })

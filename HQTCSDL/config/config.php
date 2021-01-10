@@ -35,5 +35,11 @@ function notNull($data)
           if($data=='') return false;
      return true;
 }
+
+function checkRole($val=2){
+     if(isset($_SESSION['role'])&&($_SESSION['role']==$val))
+          return true;
+     return false;
+}
 ?>
 

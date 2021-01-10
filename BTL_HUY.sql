@@ -209,6 +209,7 @@ update TRANDAU SET
                 Kq=N'Chưa'
             WHERE MaTD='3';
 			--Tạo một thủ tục đưa ra danh sách các tuyển thủ đã có 3 trận thắng trong một giải đấu bất kì
+USE QLGD
 create procedure ds_tuyenthu @tenGD nvarchar(30)
 as 
 begin

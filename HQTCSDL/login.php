@@ -1,5 +1,6 @@
 <?php
     require_once('./config/config.php');
+    $kq['status']="fail";
     if(!isset($_SESSION['role']))
     {
         $kq['log']=false;
@@ -14,10 +15,11 @@
                 $_SESSION['MaTT']=$rs[0]['MaTT'];
                 $_SESSION['username']=$rs[0]['username'];
                 $_SESSION['role']=$rs[0]['role'];
-                $kq['log']=true;
+                $kq['status']="success";
             }           
         }
-        echo json_encode($kq);
+        
     }
+    echo json_encode($kq);
 
     

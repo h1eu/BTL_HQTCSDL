@@ -35,7 +35,7 @@
                         </div>
                     </div>
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                        <button type="button" class="btn btn-secondary shut2" data-dismiss="modal">Close</button>
                         <button type="button" id="create_match" class="btn btn-primary">Thêm</button>
                     </div>
                 </div>
@@ -47,8 +47,8 @@
                 <tr>
                     <th>Mã Giải Đấu</th>
                     <th>Mã Trận Đấu</th>
-                    <th>Mã Tuyển Thủ Tiên</th>
-                    <th>Mã Tuyển Thủ Hậu</th>
+                    <th>Tuyển Thủ Tiên</th>
+                    <th>Tuyển Thủ Hậu</th>
                     <th>Thời Gian Bắt Đầu</th>
                     <th>Kết Quả</th>
                     <?php if(isset($_SESSION['role'])):?>
@@ -98,8 +98,8 @@
                         </div>
                     </div>
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                        <button type="button" id="edit_match" class="btn btn-primary">Thêm</button>
+                        <button type="button" class="btn btn-secondary shut" data-dismiss="modal">Close</button>
+                        <button type="button" id="edit_match" class="btn btn-primary">Sửa</button>
                     </div>
                 </div>
             </div>

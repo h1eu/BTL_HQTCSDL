@@ -8,7 +8,9 @@
     display: none;
 }
 
-
+.message{
+    display: none;
+}
 
 canvas{
     border:1px solid #444444;
