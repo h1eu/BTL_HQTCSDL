@@ -82,7 +82,8 @@ INSERT INTO dbo.TUYENTHU
 	QuocGia,
 	username,
 	pass,
-	email
+	email,
+	role
 )
 VALUES
 (   N'Lê Văn B',       -- TenTT - nvarchar(41)
@@ -91,7 +92,8 @@ VALUES
     N'Hải Phòng',        -- Que - nvarchar(50)
 	'hieus207',
 	'hieu123',
-	'hieutr@gmail.com'
+	'hieutr@gmail.com',
+	2
     ),(
 		N'Nguyễn Cuốc Huy',       -- TenTT - nvarchar(41)
     GETDATE(), -- NgaySinh - date
@@ -99,7 +101,8 @@ VALUES
     N'Hải Phòng',
 	'huyhayho',
 	'huy123',
-	'huytrk@gm.com'
+	'huytrk@gm.com',
+	1
 	)
 
 INSERT INTO dbo.GIAIDAU
@@ -220,13 +223,14 @@ on TRANDAU for delete
 as
 begin
 declare @sl int
-set @sl = (select count(Kq) from deleted where(Kq!=0))
+set @sl = (select count(Kq) from deleted where(Kq!=-1))
 if (@sl>0)
 	begin
 		print(N'Không thể xóa trận đấu đã có kết quả')
 		rollback tran
 	end
 end
+drop trigger td_xoa
 
 /*C2:Không cho xóa cập nhật trận đấu đã có kq*/
 Create trigger td_sua
@@ -367,7 +371,7 @@ end
 
 drop trigger gd_sua2
 
-/*C7:Không cho cập nhật kết quả trận đấu khi chưa đủ số trận tối thiểu*/
+/*C8:Không cho cập nhật kết quả trận đấu khi chưa đủ số trận tối thiểu*/
 Create trigger td_sua3
 	on TRANDAU for update
 	as
@@ -387,7 +391,7 @@ Create trigger td_sua3
 end
 drop trigger gd_sua3
 
-/*C7:Không cho cập nhật kết quả trận đấu khi chưa đủ số trận tối thiểu*/
+/*C9:Không cho cập nhật kết quả trận đấu khi chưa đủ số trận tối thiểu*/
 Create trigger td_kq
 	on TRANDAU for update
 	as
@@ -402,11 +406,11 @@ Create trigger td_kq
 	set @TranThua = (select TranThua from BANGDIEM where MATT=@MaTT1 and MaGD=@MaGD)
 	set @HieuSo = (select HieuSo from BANGDIEM where MATT=@MaTT1 and MaGD=@MaGD)
 	set @Diem = (select Diem from BANGDIEM where MATT=@MaTT1 and MaGD=@MaGD)
-	set @TranHoa2 = (select TranHoa from BANGDIEM where MATT=@MaTT1 and MaGD=@MaGD)
-	set @TranThang2 = (select TranThang from BANGDIEM where MATT=@MaTT1 and MaGD=@MaGD)
-	set @TranThua2 = (select TranThua from BANGDIEM where MATT=@MaTT1 and MaGD=@MaGD)
-	set @HieuSo2 = (select HieuSo from BANGDIEM where MATT=@MaTT1 and MaGD=@MaGD)
-	set @Diem2 = (select Diem from BANGDIEM where MATT=@MaTT1 and MaGD=@MaGD)
+	set @TranHoa2 = (select TranHoa from BANGDIEM where MATT=@MaTT2 and MaGD=@MaGD)
+	set @TranThang2 = (select TranThang from BANGDIEM where MATT=@MaTT2 and MaGD=@MaGD)
+	set @TranThua2 = (select TranThua from BANGDIEM where MATT=@MaTT2 and MaGD=@MaGD)
+	set @HieuSo2 = (select HieuSo from BANGDIEM where MATT=@MaTT2 and MaGD=@MaGD)
+	set @Diem2 = (select Diem from BANGDIEM where MATT=@MaTT2 and MaGD=@MaGD)
 	if(@Kq!=-1)
 	begin try
 		if(@Kq=0)
@@ -441,7 +445,8 @@ Create trigger td_kq
 	end catch
 end
 
-
+update TRANDAU set Kq='5' where MaTD='38'
+select * from BANGDIEM
 drop trigger td_kq
 
 -- VIEW-----------------------
