@@ -226,9 +226,8 @@ if (@sl>0)
 		print(N'Không thể xóa trận đấu đã có kết quả')
 		rollback tran
 	end
-else
-print(N'Xóa thành công')
 end
+
 /*C2:Không cho xóa cập nhật trận đấu đã có kq*/
 Create trigger td_sua
 on TRANDAU for update
@@ -257,8 +256,10 @@ begin
 	End Try
 	Begin Catch
 		print(N'Không thể xóa các tuyển thủ đã thi đấu trong giải đấu')
+		rollback tran
 	End Catch
 end
+
 
 /*C4: Không cho phép thêm trận đấu lệch thời gian giải đấu hoặc chứa tuyển thủ chưa đăng ký giải đấu*/
 Create trigger td_them
@@ -308,7 +309,7 @@ begin
 	end
 end
 
-/*C6: Không cho 1 tuyển thủ đăng ký các giải đấu trùng thời gian*/
+/*C6: ERROR Không cho 1 tuyển thủ đăng ký các giải đấu trùng thời gian*/
 Create trigger bd_them
 on BANGDIEM for insert
 as
@@ -362,6 +363,8 @@ if ((@tgbd!=@tgbd2)or(@tgkt!=@tgkt2))
 		rollback tran
 	end
 end
+
+
 drop trigger gd_sua2
 
 /*C7:Không cho cập nhật kết quả trận đấu khi chưa đủ số trận tối thiểu*/
@@ -378,11 +381,68 @@ Create trigger td_sua3
 	set @Tongtran=@Tongtran/2+1;
 	if(@Kq!=-1 and @sotrandau<@Tongtran)
 	begin
-		print(N'Không thể cập nhật thời gian các giải đấu')
+		print(N'Không thể cập nhật kết quả trận đấu khi chưa đủ số trận tối thiểu')
 			rollback tran
 	end
 end
-drop trigger gd_sua2
+drop trigger gd_sua3
+
+/*C7:Không cho cập nhật kết quả trận đấu khi chưa đủ số trận tối thiểu*/
+Create trigger td_kq
+	on TRANDAU for update
+	as
+	begin
+	declare @Kq nvarchar(10),@MaTT1 int,@MaTT2 int,@TranHoa int,@TranThang int,@TranThua int,@Diem int,@HieuSo int,@MaGD int,@TranHoa2 int,@TranThang2 int,@TranThua2 int,@Diem2 int,@HieuSo2 int
+	set @Kq = (select Kq from inserted)
+	set @MaTT1 = (select MaTT1 from inserted)
+	set @MaTT2 = (select MaTT2 from inserted)
+	set @MaGD = (select MaGD from inserted)
+	set @TranHoa = (select TranHoa from BANGDIEM where MATT=@MaTT1 and MaGD=@MaGD)
+	set @TranThang = (select TranThang from BANGDIEM where MATT=@MaTT1 and MaGD=@MaGD)
+	set @TranThua = (select TranThua from BANGDIEM where MATT=@MaTT1 and MaGD=@MaGD)
+	set @HieuSo = (select HieuSo from BANGDIEM where MATT=@MaTT1 and MaGD=@MaGD)
+	set @Diem = (select Diem from BANGDIEM where MATT=@MaTT1 and MaGD=@MaGD)
+	set @TranHoa2 = (select TranHoa from BANGDIEM where MATT=@MaTT1 and MaGD=@MaGD)
+	set @TranThang2 = (select TranThang from BANGDIEM where MATT=@MaTT1 and MaGD=@MaGD)
+	set @TranThua2 = (select TranThua from BANGDIEM where MATT=@MaTT1 and MaGD=@MaGD)
+	set @HieuSo2 = (select HieuSo from BANGDIEM where MATT=@MaTT1 and MaGD=@MaGD)
+	set @Diem2 = (select Diem from BANGDIEM where MATT=@MaTT1 and MaGD=@MaGD)
+	if(@Kq!=-1)
+	begin try
+		if(@Kq=0)
+		begin
+			update BANGDIEM set TranHoa=(@TranHoa+1) where MaGD=@MaGD and MATT=@MaTT1
+			update BANGDIEM set TranHoa=(@TranHoa2+1) where MaGD=@MaGD and MATT=@MaTT2
+			update BANGDIEM set Diem=(@Diem+1) where MaGD=@MaGD and MATT=@MaTT1
+			update BANGDIEM set Diem=(@Diem2+1) where MaGD=@MaGD and MATT=@MaTT2
+		end
+		else
+			if(@Kq=@MaTT1)
+					begin
+			update BANGDIEM set TranThang=(@TranThang+1) where MaGD=@MaGD and MATT=@MaTT1
+			update BANGDIEM set TranThua=(@TranThua2+1) where MaGD=@MaGD and MATT=@MaTT2
+			update BANGDIEM set Diem=(@Diem+2) where MaGD=@MaGD and MATT=@MaTT1
+			update BANGDIEM set HieuSo=(@HieuSo+1) where MaGD=@MaGD and MATT=@MaTT1
+			update BANGDIEM set HieuSo=(@HieuSo2-1) where MaGD=@MaGD and MATT=@MaTT2
+					end
+			else
+			if(@Kq=@MaTT2)
+				begin
+			update BANGDIEM set TranThang=(@TranThang2+1) where MaGD=@MaGD and MATT=@MaTT2
+			update BANGDIEM set TranThua=(@TranThua+1) where MaGD=@MaGD and MATT=@MaTT1
+			update BANGDIEM set Diem=(@Diem2+2) where MaGD=@MaGD and MATT=@MaTT2
+			update BANGDIEM set HieuSo=(@HieuSo2+1) where MaGD=@MaGD and MATT=@MaTT2
+			update BANGDIEM set HieuSo=(@HieuSo-1) where MaGD=@MaGD and MATT=@MaTT1
+					end
+	end try
+	begin catch
+		print 'Không thể cập nhật bảng điểm'
+		rollback tran
+	end catch
+end
+
+
+drop trigger td_kq
 
 -- VIEW-----------------------
 /*Tạo view BXH 20 tuyển thủ thắng nhiều nhất và số trận thắng*/
@@ -488,9 +548,7 @@ drop procedure tt_thongke3
 CREATE PROCEDURE tt_thongke3 @tuoi int
 AS
 Begin
-	Select TOP 10 tt.MaTT,tt.Ten,Count(td.Kq) as Thang from TUYENTHU as tt,TRANDAU as td WHERE ((tt.MaTT=td.MaTT1 and td.Kq=tt.MaTT) or (tt.MaTT=td.MaTT2 and td.Kq=tt.MaTT)) and(td.Kq!=-1 and td.Kq!=0) group by tt.MaTT,tt.Ten ORDER BY Thang DESC
-/*	select * from TUYENTHU WHERE MaTT in (select TOP 10 tt.MaTT from TUYENTHU as tt,TRANDAU as td Where @tuoi>=(YEAR(GETDATE())-YEAR(tt.NgaySinh)) and td.Kq=tt.MaTT and (Kq!=0) And (Kq!=-1) GROUP BY MaTT ORDER BY Count(Kq) DESC)
-*/
+	Select TOP 10 tt.MaTT,tt.Ten,Count(td.Kq) as Thang from TUYENTHU as tt,TRANDAU as td WHERE @tuoi>=(YEAR(GETDATE())-YEAR(tt.NgaySinh)) and ((tt.MaTT=td.MaTT1 and td.Kq=tt.MaTT) or (tt.MaTT=td.MaTT2 and td.Kq=tt.MaTT)) and(td.Kq!=-1 and td.Kq!=0) group by tt.MaTT,tt.Ten ORDER BY Thang DESC
 end
 
 exec tt_thongke2
