@@ -293,6 +293,39 @@ Create trigger td_kq
 end
 
 drop trigger td_kq
+--C10 Tạo trigger ktra nếu giải đấu có số tuyển thủ tham gia đã đủ thì không cho phép thêm tuyển thủ vào giải đấu nữa
+create view TT_GD
+as
+select BANGDIEM.MaTT,GIAIDAU.TongTT,GIAIDAU.MaGD from GIAIDAU inner join BANGDIEM on BANGDIEM.MaGD=GIAIDAU.MaGD 
+select * from TT_GD
+drop view TT_GD
+create trigger ktra_sl_tt
+on BANGDIEM
+for insert
+as
+declare @sltt int
+declare @ttdk int
+set @sltt = (select TongTT from TT_GD group by TongTT)
+set @ttdk =( select count(MaTT)from TT_GD)
+if(@ttdk>=@sltt)
+begin
+print('Giải đấu đã đủ tuyển thủ tham gia')
+rollback tran
+end
+drop trigger ktra_sl_tt
+select * from GIAIDAU
+
+
+--C11 Tạo trigger sao cho khi xóa 1 giải đấu trong bảng giải đấu , thì thông tin về bảng điểm của giải đấu đó cũng bị xóa
+create trigger xoa_gd 
+on GIAIDAU
+FOR DELETE
+AS
+BEGIN
+DELETE FROM BANGDIEM
+WHERE MaGD= (select MaGD from DELETED)
+PRINT N'Xóa thành công '
+end
 
 -- VIEW-----------------------
 /*Tạo view BXH 20 tuyển thủ thắng nhiều nhất và số trận thắng*/
@@ -311,7 +344,18 @@ Select TOP 10 tt.MaTT,tt.Ten,Count(td.Kq) as Thua from TUYENTHU as tt,TRANDAU as
 select * from BXH_Thua
 drop view BXH_Thua
 
-
+-- Tạo view hiển  thị mã tuyển thủ,tên tuyển thủ,quốc gia ,ngày dinh ,Diem trong  giải đấu
+create view viewTT(MaTT,Ten,QuocGia,NgaySinh,Diem)
+as
+select TUYENTHU.MaTT,TUYENTHU.Ten,TUYENTHU.QuocGia,TUYENTHU.NgaySinh,BANGDIEM.Diem from TUYENTHU
+inner join BANGDIEM on TUYENTHU.MaTT=BANGDIEM.MaTT
+use QLGD
+select * from viewTT
+-- Tạo view hiển thị mã giải đấu , tên tuyển thủ  , quốc gia số trận thắng , số trận hòa , số trận thua , hiệu số , điểm số của các tuyển thủ tham gia vào giải đấu
+create view viewGD (MaGD,TenTT,QuocGia,TranThang,TranHoa,TranThua,Hieuso,Diem)
+as
+select BANGDIEM.MaGD,TUYENTHU.Ten,TUYENTHU.QUOCGIA,BANGDIEM.TranThang,BANGDIEM.TranHoa,BANGDIEM.TranThua,BANGDIEM.HieuSo,BANGDIEM.Diem from TUYENTHU
+inner join BANGDIEM on TUYENTHU.MaTT=BANGDIEM.MaTT
 --FUNCTION---------
 /*Viết một hàm để tính tỷ lệ thắng của 1 tt bất kỳ trong toàn giải đấu*/
 Create function tt_tilewin1(@MaTT int)
@@ -378,7 +422,31 @@ END
 select * from td_tt('5')
 
 drop function td_tt
-
+-- Viết hàm trả về danh sách các tuyển thủ có hiệu số >=2 của 1 giải đấu bất kì
+create function ds_tt_hs ( @magd int)
+returns @dstt TABLE (MaTT int ,Ten nvarchar(30) ,QuocGia nvarchar(30) ,NgaySinh date)
+as
+begin
+insert into @dstt
+Select TUYENTHU.MaTT,TUYENTHU.Ten,TUYENTHU.QuocGia,TUYENTHU.NgaySinh from TUYENTHU inner join BANGDIEM on TUYENTHU.MaTT=BANGDIEM.MaTT
+where BANGDIEM.MaGD =@magd
+and BANGDIEM.HieuSo >=2
+return
+end
+select * from ds_tt_hs(1)
+-- Viết hàm trả về tuổi trung bình của các tuyển thủ trong một giải đấu
+create function tuoi_tb (@magd int)
+returns float
+as
+begin
+declare @tuoitb float
+select @tuoitb =Avg(datediff (Year,getdate(),TUYENTHU.NgaySinh)) from BANGDIEM
+inner join TUYENTHU on TUYENTHU.MaTT=BANGDIEM.MaTT
+inner join GIAIDAU on BANGDIEM.MaGD=GIAIDAU.MaGD
+where GIAIDAU.MaGD=@magd
+return @tuoitb
+end
+print( dbo.tuoi_tb(1))
 --PROCEDURE--------------
 /* Thủ tục thống kê 10 trận gần nhất của 2 tuyển thủ*/
 CREATE PROCEDURE tt_thongke @MaTT1 int,@MaTT2 int
@@ -408,3 +476,25 @@ Begin
 end
 
 exec tt_thongke3 30
+--Tạo một thủ tục đưa ra danh sách các tuyển thủ đã có 3 trận thắng trong một giải đấu bất kì
+create procedure ds_tuyenthu @maGD nvarchar(30)
+as 
+begin
+select BANGDIEM.MaGD ,TUYENTHU.MaTT ,TUYENTHU.Ten ,TUYENTHU.QuocGia from BANGDIEM 
+inner join TUYENTHU on BANGDIEM.MaTT=TUYENTHU.MaTT
+Where BANGDIEM.MaGD =@maGD and
+BANGDIEM.TranThang >=3
+end
+--drop procedure ds_tuyenthu
+
+exec dbo.ds_tuyenthu @maGD=1
+--Viết một thủ tục hiển thị ra danh sách tuyển thủ của một giải đấu nào đó
+create procedure ds_tt_gd @magd int
+as
+begin
+select BANGDIEM.MATT,TUYENTHU.Ten ,TUYENTHU.QuocGia from BANGDIEM inner join GIAIDAU on BANGDIEM.MaGD = GIAIDAU.MaGD
+inner join TUYENTHU on BANGDIEM.MATT = TUYENTHU.MaTT
+Where GIAIDAU.MaGD =@magd
+end
+--drop procedure ds_tt_gd
+exec ds_tt_gd @magd =1
