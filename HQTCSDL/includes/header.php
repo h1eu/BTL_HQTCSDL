@@ -31,7 +31,7 @@
                     <a class="nav-link" href="index.php">Home <span class="sr-only">(current)</span></a>
                 </li>
                 <li class="nav-item active">
-                    <a class="nav-link" href="#">Rule</a>
+                    <a class="nav-link" href="TrinhHieu.php">Trịnh Hiếu</a>
                 </li class="nav-item active">
                 <?php if(isset($_SESSION['role'])):?>
                     <span class="nav-link" style="color:yellow">Hi, <?php echo $_SESSION['username'];?></span> <button type="button" class="btn btn-primary logout">Logout</button>

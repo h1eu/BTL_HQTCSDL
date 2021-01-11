@@ -96,7 +96,7 @@ $('.show').click(function(){
                         action
                         +"</tr>");
                     }
-
+                
                 $('.scboard_del').click(function(){
                     let MaTT=$(this).parent().parent().children().eq(0)[0].textContent;
                     if(confirm("Bạn có chắc muốn xóa tuyển thủ này khỏi giải đấu?"))
@@ -104,6 +104,7 @@ $('.show').click(function(){
                         url: './function/del_tt.php',
                         type: 'post',
                         data: {
+                            MaGD:maGD,
                             MaTT:MaTT
                         },
                         dataType: 'json',
@@ -141,13 +142,17 @@ $('.show').click(function(){
                         action="<td> <button type='button' class='btn btn-primary match_edit' onClick=(match_edit("+data['MaGD']+","+data['MaTD']+"))> Edit </button> </td>"+
                         "<td> <button type='button' class='btn btn-primary match_del' onClick=(match_del("+data['MaTD']+"))> Del </button> </td>";
                     }
+                    let winner="Chưa";
+                    if(data['Kq']==0) winner="Hòa";
+                    if(data['Kq']==data['MaTT1']) winner=data['Ten1'];
+                    if(data['Kq']==data['MaTT2']) winner=data['Ten2'];
                     $("#td_body").append("<tr>"+
                     "<td scope='row'>"+data['MaGD']+"</td>"+
                     "<td>"+data['MaTD']+"</td>"+
                     "<td>"+data['Ten1']+"</td>"+
                     "<td>"+data['Ten2']+"</td>"+
                     "<td>"+data['TGBD'].date.slice(0,11)+"</td>"+
-                    "<td>"+data['Kq']+"</td>"+
+                    "<td value='"+data['Kq']+"'>"+winner+"</td>"+
                     action
                     +"</tr>");
                 }
@@ -344,6 +349,8 @@ $('.league_del').click(function(){
 function match_edit(val,MaTD){
     $('.open_ed_td').click();
     maGD=val;
+
+    
     $.ajax({
         url: './function/get_tt.php',
         type: 'post',
@@ -354,16 +361,45 @@ function match_edit(val,MaTD){
         success:function(response){
             $('#ed_match_tt1').empty();
             $('#ed_match_tt2').empty();
+            $('#ed_match_result').empty();
+            $('#ed_match_result').append("<option value='-1'>Chưa</option>"+
+            "<option value='0'>Hòa</option>")
+            
             for(data of response)
             {
                 $('#ed_match_tt1').append("<option id='MaTT1_"+data['MaTT']+"' value='"+data['MaTT']+"'>"+data['Ten']+"</option>");
                 $('#ed_match_tt2').append("<option id='MaTT2_"+data['MaTT']+"' value='"+data['MaTT']+"'>"+data['Ten']+"</option>");
+                $('#ed_match_result').append("<option value='"+data['MaTT']+"'>"+data['Ten']+"</option>")
             }
-            
+               
         }
         
     })
-
+    
+    $('#ed_match_tt1').change(function(){
+        let Matt1=$('#ed_match_tt1').val();
+        let Matt2=$('#ed_match_tt2').val();
+        let Tentt1=$( "#ed_match_tt1 option:selected").text();
+        let Tentt2=$( "#ed_match_tt2 option:selected").text();
+        $('#ed_match_result').empty();
+        $('#ed_match_result').append("<option value='-1'>Chưa</option>"+
+        "<option value='0'>Hòa</option>"+
+        "<option value='"+Matt1+"'>"+Tentt1+"</option>"+
+        "<option value='"+Matt2+"'>"+Tentt2+"</option>"
+        );
+    })
+    $('#ed_match_tt2').change(function(){
+        let Matt1=$('#ed_match_tt1').val();
+        let Matt2=$('#ed_match_tt2').val();
+        let Tentt1=$( "#ed_match_tt1 option:selected" ).text();
+        let Tentt2=$( "#ed_match_tt2 option:selected" ).text();
+        $('#ed_match_result').empty();
+        $('#ed_match_result').append("<option value='-1'>Chưa</option>"+
+        "<option value='0'>Hòa</option>"+
+        "<option value='"+Matt1+"'>"+Tentt1+"</option>"+
+        "<option value='"+Matt2+"'>"+Tentt2+"</option>"
+        );
+    })
     $.ajax({
         url: './function/get_td.php',
         type: 'post',
@@ -371,13 +407,15 @@ function match_edit(val,MaTD){
             MaTD:MaTD
         },
         dataType: 'json',
+        
         success:function(response){
             let MaTT1=response[0]['MaTT1'];
             let MaTT2=response[0]['MaTT2'];
             $('#MaTT1_'+MaTT1).attr('selected','')
             $('#MaTT2_'+MaTT2).attr('selected','')
             $('#ed_match_TS').val(response[0]['TGBD'].date.slice(0,10));
-            $('#ed_match_result').val(response[0]['Kq']);      
+            // $('#ed_match_result').val(response[0]['Kq']);
+
             $('#ed_match_MaTD').val(MaTD);      
         }
     })

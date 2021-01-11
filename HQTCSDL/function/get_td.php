@@ -12,7 +12,7 @@
             {
                 $ten[$data['MaTT']]=$data['Ten'];
             }
-            $sql="select * from TRANDAU WHERE MaGD='$MaGD'";
+            $sql="select * from TRANDAU WHERE MaGD='$MaGD' ORDER BY TGBD ASC";
             $result=sqlsrv_query($conn,$sql);
             $rs=array();
             while($row = sqlsrv_fetch_array( $result, SQLSRV_FETCH_ASSOC)){ 

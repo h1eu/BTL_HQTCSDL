@@ -92,8 +92,11 @@
                             </select>
                             <label>Thời Gian Bắt đầu</label>
                             <input type="text" class="form-control" id="ed_match_TS" aria-describedby="helpId" placeholder="">
+                            <!-- <label>Kết Quả</label>
+                            <input type="text" class="form-control" id="ed_match_result" aria-describedby="helpId" placeholder=""> -->
                             <label>Kết Quả</label>
-                            <input type="text" class="form-control" id="ed_match_result" aria-describedby="helpId" placeholder="">
+                                <select class="form-control" id="ed_match_result">
+                                </select>
                             <input type="text" class="form-control" id="ed_match_MaTD" aria-describedby="helpId" placeholder="" hidden>
                         </div>
                     </div>
