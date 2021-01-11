@@ -214,7 +214,56 @@ VALUES
     '1',
     '1'
 )
+--PROCEDURE--------------
+/* Thủ tục thống kê 10 trận gần nhất của 2 tuyển thủ*/
+CREATE PROCEDURE tt_thongke @MaTT1 int,@MaTT2 int
+AS
+Begin
+	select TOP 10 * from TRANDAU where (MaTT1=@MaTT1 OR MaTT1=@MaTT2) AND (MaTT2=@MaTT1 OR MaTT2=@MaTT2) AND (Kq!=-1) ORDER BY TGBD DESC
+end
 
+drop procedure tt_thongke
+exec tt_thongke 5,9
+/* Thủ tục thống kê 10 tuyển thủ thắng nhiều nhất*/
+CREATE PROCEDURE tt_thongke2
+AS
+Begin
+	select TOP 10 Kq,Count(Kq) as NumWin from TRANDAU WHERE (Kq!=0) And (Kq!=-1) GROUP BY Kq ORDER BY Count(Kq) DESC 
+end
+
+drop procedure tt_thongke3
+/* Thủ tục đưa ra danh sách 10 tuyển thủ dưới số tuổi nhập vào có nhiều trận thắng nhất*/
+CREATE PROCEDURE tt_thongke3 @tuoi int
+AS
+Begin
+	Select TOP 10 tt.MaTT,tt.Ten,Count(td.Kq) as Thang from TUYENTHU as tt,TRANDAU as td WHERE @tuoi>=(YEAR(GETDATE())-YEAR(tt.NgaySinh)) and ((tt.MaTT=td.MaTT1 and td.Kq=tt.MaTT) or (tt.MaTT=td.MaTT2 and td.Kq=tt.MaTT)) and(td.Kq!=-1 and td.Kq!=0) group by tt.MaTT,tt.Ten ORDER BY Thang DESC
+end
+
+exec tt_thongke2
+exec tt_thongke3 30
+
+--Tạo một thủ tục đưa ra danh sách các tuyển thủ đã có 3 trận thắng trong một giải đấu bất kì
+create procedure ds_tuyenthu @maGD nvarchar(30)
+as 
+begin
+select BANGDIEM.MaGD ,TUYENTHU.MaTT ,TUYENTHU.Ten ,TUYENTHU.QuocGia from BANGDIEM 
+inner join TUYENTHU on BANGDIEM.MaTT=TUYENTHU.MaTT
+Where BANGDIEM.MaGD =@maGD and
+BANGDIEM.TranThang >=3
+end
+--drop procedure ds_tuyenthu
+
+exec dbo.ds_tuyenthu @maGD=1
+--Viết một thủ tục hiển thị ra danh sách tuyển thủ của một giải đấu nào đó
+create procedure ds_tt_gd @magd int
+as
+begin
+select BANGDIEM.MATT,TUYENTHU.Ten ,TUYENTHU.QuocGia from BANGDIEM inner join GIAIDAU on BANGDIEM.MaGD = GIAIDAU.MaGD
+inner join TUYENTHU on BANGDIEM.MATT = TUYENTHU.MaTT
+Where GIAIDAU.MaGD =@magd
+end
+--drop procedure ds_tt_gd
+exec ds_tt_gd @magd =1
 --Trigger
 --Triger
 /*C1:Không cho xóa các trận đấu đã có kq*/
@@ -531,34 +580,102 @@ drop function td_tt
 select * from td_tt('34')
 
 
---PROCEDURE--------------
-/* Thủ tục thống kê 10 trận gần nhất của 2 tuyển thủ*/
-CREATE PROCEDURE tt_thongke @MaTT1 int,@MaTT2 int
+
+
+-- Viết hàm trả về danh sách các tuyển thủ có hiệu số >=2 của 1 giải đấu bất kì
+create function ds_tt_hs ( @magd int)
+returns @dstt TABLE (MaTT int ,Ten nvarchar(30) ,QuocGia nvarchar(30) ,NgaySinh date)
+as
+begin
+insert into @dstt
+Select TUYENTHU.MaTT,TUYENTHU.Ten,TUYENTHU.QuocGia,TUYENTHU.NgaySinh from TUYENTHU inner join BANGDIEM on TUYENTHU.MaTT=BANGDIEM.MaTT
+where BANGDIEM.MaGD =@magd
+and BANGDIEM.HieuSo >=2
+return
+end
+select * from ds_tt_hs(1)
+-- Viết hàm trả về tuổi trung bình của các tuyển thủ trong một giải đấu
+create function tuoi_tb (@magd int)
+returns float
+as
+begin
+declare @tuoitb float
+select @tuoitb =Avg(datediff (Year,getdate(),TUYENTHU.NgaySinh)) from BANGDIEM
+inner join TUYENTHU on TUYENTHU.MaTT=BANGDIEM.MaTT
+inner join GIAIDAU on BANGDIEM.MaGD=GIAIDAU.MaGD
+where GIAIDAU.MaGD=@magd
+return @tuoitb
+end
+print( dbo.tuoi_tb(1))
+--drop function tuoi_tb
+-- Tạo view hiển  thị mã tuyển thủ,tên tuyển thủ,quốc gia ,ngày dinh ,Diem trong  giải đấu
+create view viewTT(MaTT,Ten,QuocGia,NgaySinh,Diem)
+as
+select TUYENTHU.MaTT,TUYENTHU.Ten,TUYENTHU.QuocGia,TUYENTHU.NgaySinh,BANGDIEM.Diem from TUYENTHU
+inner join BANGDIEM on TUYENTHU.MaTT=BANGDIEM.MaTT
+use QLGD
+select * from viewTT
+-- Tạo view hiển thị mã giải đấu , tên tuyển thủ  , quốc gia số trận thắng , số trận hòa , số trận thua , hiệu số , điểm số của các tuyển thủ tham gia vào giải đấu
+create view viewGD (MaGD,TenTT,QuocGia,TranThang,TranHoa,TranThua,Hieuso,Diem)
+as
+select BANGDIEM.MaGD,TUYENTHU.Ten,TUYENTHU.QUOCGIA,BANGDIEM.TranThang,BANGDIEM.TranHoa,BANGDIEM.TranThua,BANGDIEM.HieuSo,BANGDIEM.Diem from TUYENTHU
+inner join BANGDIEM on TUYENTHU.MaTT=BANGDIEM.MaTT
+
+
+--drop view viewGD ,
+select * from viewGD
+
+--Tạo trigger ktra nếu giải đấu có số tuyển thủ tham gia đã đủ thì không cho phép thêm tuyển thủ vào giải đấu nữa
+create view TT_GD
+as
+select BANGDIEM.MaTT,GIAIDAU.TongTT,GIAIDAU.MaGD from GIAIDAU inner join BANGDIEM on BANGDIEM.MaGD=GIAIDAU.MaGD 
+select * from TT_GD
+drop view TT_GD
+create trigger ktra_sl_tt
+on BANGDIEM
+for insert
+as
+declare @sltt int
+declare @ttdk int
+set @sltt = (select TongTT from TT_GD group by TongTT)
+set @ttdk =( select count(MaTT)from TT_GD)
+if(@ttdk>=@sltt)
+begin
+print('Giải đấu đã đủ tuyển thủ tham gia')
+rollback tran
+end
+drop trigger ktra_sl_tt
+select * from GIAIDAU
+
+
+-- Tạo trigger sao cho khi xóa 1 giải đấu trong bảng giải đấu , thì thông tin về bảng điểm của giải đấu đó cũng bị xóa
+create trigger xoa_gd 
+on GIAIDAU
+FOR DELETE
 AS
-Begin
-	select TOP 10 * from TRANDAU where (MaTT1=@MaTT1 OR MaTT1=@MaTT2) AND (MaTT2=@MaTT1 OR MaTT2=@MaTT2) AND (Kq!=-1) ORDER BY TGBD DESC
+BEGIN
+DELETE FROM BANGDIEM
+WHERE MaGD= (select MaGD from DELETED)
+PRINT N'Xóa thành công '
 end
 
-drop procedure tt_thongke
-exec tt_thongke 5,9
-/* Thủ tục thống kê 10 tuyển thủ thắng nhiều nhất*/
-CREATE PROCEDURE tt_thongke2
-AS
+
+-- Tạo con trỏ hiển thị danh sách MaGD,TenGD,MaTT,TranThang,TranThua,TranHoa,HieuSo,Diem
+use QLGD
+declare con_tro_GD Cursor
+DYNAMIC SCROLL
+for
+Select BANGDIEM.MaGD,MaTT,TranThang,TranThua,TranHoa,HieuSo,DIEM from BANGDIEM inner join GIAIDAU on BANGDIEM.MaGD=GIAIDAU.MaGD
+Open con_tro_GD;
+declare @MaGD int,@MaTT int ,@TranThang int ,@TranThua int ,@TranHoa int, @HieuSo int ,@Diem int ;
+FETCH NEXT from con_tro_GD into @MaGD,@MaTT,@TranThang,@TranThua,@TranHoa,@HieuSo,@DIEM
+while(@@FETCH_STATUS=0)
 Begin
-	select TOP 10 Kq,Count(Kq) as NumWin from TRANDAU WHERE (Kq!=0) And (Kq!=-1) GROUP BY Kq ORDER BY Count(Kq) DESC 
+print cast ( @MaGD as int)+' '+@MaTT+''+@TranThang+''+@TranThua+''+@TranHoa+''+@HieuSo+''+@DIEM
+FETCH NEXT from con_tro_GD into  @MaGD,@MaTT,@TranThang,@TranThua,@TranHoa,@HieuSo,@DIEM
 end
-
-drop procedure tt_thongke3
-/* Thủ tục đưa ra danh sách 10 tuyển thủ dưới số tuổi nhập vào có nhiều trận thắng nhất*/
-CREATE PROCEDURE tt_thongke3 @tuoi int
-AS
-Begin
-	Select TOP 10 tt.MaTT,tt.Ten,Count(td.Kq) as Thang from TUYENTHU as tt,TRANDAU as td WHERE @tuoi>=(YEAR(GETDATE())-YEAR(tt.NgaySinh)) and ((tt.MaTT=td.MaTT1 and td.Kq=tt.MaTT) or (tt.MaTT=td.MaTT2 and td.Kq=tt.MaTT)) and(td.Kq!=-1 and td.Kq!=0) group by tt.MaTT,tt.Ten ORDER BY Thang DESC
-end
-
-exec tt_thongke2
-exec tt_thongke3 30
-
+close con_tro_GD;
+DeAllocate con_tro_GD;
 
 
 

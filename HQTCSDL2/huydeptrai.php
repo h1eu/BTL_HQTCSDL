@@ -4,6 +4,46 @@
 <div class="container">
     <br>
     <br>
+    <h5> View hiển  thị mã tuyển thủ,tên tuyển thủ,quốc gia ,ngày sinh ,Diem trong  giải đấu </h5>
+    <button type="button" class="btn btn-primary view11">Show</button>
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Mã Tuyển Thủ</th>
+                <th>Tên Tuyển Thủ</th>
+                <th>Quốc Gia</th>
+                <th>Ngày Sinh</th>
+                <th>Điểm</th>
+            </tr>
+        </thead>
+        <tbody id="view11">
+        </tbody>
+    </table>
+
+    <br>
+    <br>
+    </hr>
+    <h5> View hiển thị mã giải đấu , tên tuyển thủ  , quốc gia ,số trận thắng , số trận hòa , số trận thua , hiệu số , điểm số của các tuyển thủ tham gia vào giải đấu</h5>
+    <button type="button" class="btn btn-primary view22">Show</button>
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Mã Giải Đấu</th>
+                <th>Tên Tuyển Thủ</th>
+                <th>Quốc Gia</th>
+                <th>Số Trận Thắng</th>
+                <th>Số Trận Hòa</th>
+                <th>Số Trận Thua</th>
+                <th>Hiệu Số</th>
+                <th>Tổng Điểm</th>
+            </tr>
+        </thead>
+        <tbody id="view22">
+        </tbody>
+    </table>
+    <br>
+    <br>
+    </hr>
     <h5> Hàm trả về danh sách các tuyển thủ có hiệu số >=2 của 1 giải đấu bất kì</h5>
     <div class="form-group">
       <label for="">Nhập mã trận đấu</label>
@@ -59,7 +99,7 @@
                 <th>Quốc Gia</th>
             </tr>
         </thead>
-        <tbody id="sp1">
+        <tbody id="sp11">
         </tbody>
     </table>
 
@@ -85,45 +125,6 @@
     <br>
     <br>
     </hr>
-    <h5> View hiển  thị mã tuyển thủ,tên tuyển thủ,quốc gia ,ngày sinh ,Diem trong  giải đấu </h5>
-    <button type="button" class="btn btn-primary view11">Show</button>
-    <table class="table">
-        <thead>
-            <tr>
-                <th>Mã Tuyển Thủ</th>
-                <th>Tên Tuyển Thủ</th>
-                <th>Quốc Gia</th>
-                <th>Ngày Sinh</th>
-                <th>Điểm</th>
-            </tr>
-        </thead>
-        <tbody id="view11">
-        </tbody>
-    </table>
-
-    <br>
-    <br>
-    </hr>
-    <h5> View hiển thị mã giải đấu , tên tuyển thủ  , quốc gia ,số trận thắng , số trận hòa , số trận thua , hiệu số , điểm số của các tuyển thủ tham gia vào giải đấu</h5>
-    <button type="button" class="btn btn-primary view2">Show</button>
-    <table class="table">
-        <thead>
-            <tr>
-                <th>Mã Giải Đấu</th>
-                <th>Tên Tuyển Thủ</th>
-                <th>Quốc Gia</th>
-                <th>Số Trận Thắng</th>
-                <th>Số Trận Hòa</th>
-                <th>Số Trận Thua</th>
-                <th>Hiệu Số</th>
-                <th>Tổng Điểm</th>
-            </tr>
-        </thead>
-        <tbody id="view2">
-        </tbody>
-    </table>
-    <br>
-    <br>
-    </hr>
+    
 </div>
 <?php include_once('./includes/footer.php');
