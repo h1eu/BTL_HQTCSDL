@@ -45,7 +45,7 @@ CREATE TABLE TRANDAU
 
 ALTER TABLE dbo.TRANDAU ADD DEFAULT N'-1' FOR Kq;
 ALTER TABLE dbo.GIAIDAU ADD DEFAULT 32 FOR TongTran;
-
+ALTER TABLE TUYENTHU ADD UNIQUE (username)
 USE QLGD;
 CREATE TABLE BANGDIEM
 (
@@ -69,6 +69,105 @@ ALTER TABLE BANGDIEM ADD DEFAULT 0 FOR Diem;
 
 
 
+/*THÊM DỮ LIỆU*/
+USE QLGD
+
+select * from TUYENTHU
+INSERT INTO TUYENTHU(Ten,NgaySinh,HeSo,QuocGia,username,email,pass,role)
+values('Admin','2000/11/27','999999','VN','admin','admin@admin.com','admin',2)
+INSERT INTO TUYENTHU(Ten,NgaySinh,HeSo,QuocGia,username,email,pass)
+values(N'Trần Văn C','2000/11/10','300','VN','tranvanc','tranvanc@gm.com','hieu123'),
+(N'Hoàng Trung D','2000/12/12','300','VN','hoangD','hoangD@gm.com','hieu123'),
+(N'Lâm Văn E','2000/09/17','300','VN','lamvanE','lamvanE@gm.com','hieu123'),
+(N'Nguyễn Thị F','2000/07/12','300','VN','nguyenthiF','nguyenf20@gm.com','hieu123'),
+(N'Phan Văn G','2000/04/07','300','VN','phanvanG','phanvanG@gm.com','hieu123'),
+(N'Trịnh Gia H','2000/06/16','300','VN','trinhGH','trinhGH@gm.com','hieu123'),
+(N'Vũ Hoàng K','2000/05/13','300','VN','vuhoangK','vuhoangK@gm.com','hieu123'),
+(N'Bùi Trung L','2000/07/21','300','VN','buitrungL','buitrungL@gm.com','hieu123'),
+(N'Nguyễn Văn M','2000/10/10','300','VN','NguyenVanM','tranvanc@gm.com','hieu123'),
+(N'Lê Bá N','2000/12/25','300','VN','lebaN','lebaN29@gm.com','hieu123')
+
+
+--*********-------------------------------------------------------------------******CẦN SỬA ID GIẢI ĐẤU,ID TUYỂN THỦ
+select * from GIAIDAU
+delete from GIAIDAU
+INSERT INTO GIAIDAU(TenGD,DiaDiem,TGBatDau,TGKetThuc,TongTran,TongTT)
+values(N'Bích Quế viên bôi 2',N'Hà Nam','2020/10/10','2020/11/08',20,6),
+(N'Tài Năng Đất Việt 2',N'Hà Nam','2020/11/10','2020/12/10',20,6),
+(N'Trạng Cờ Tý Quỵ 2',N'Hà Nam','2020/10/20','2020/11/20',20,6)
+
+INSERT INTO BANGDIEM(MaGD,MATT)
+values
+(4,39),
+(4,40),
+(4,41),
+(4,42),
+(4,43)
+
+select * from BANGDIEM
+INSERT INTO BANGDIEM(MaGD,MATT)
+values
+(5,40),
+(5,42),
+(5,46),
+(5,47),
+(5,44)
+INSERT INTO BANGDIEM(MaGD,MATT)
+values
+(6,44),
+(6,45),
+(6,46),
+(6,47),
+(6,48)
+
+SELECT * FROM GIAIDAU
+SELECT * FROM BANGDIEM WHERE MaGD=4
+INSERT INTO TRANDAU(MaGD,MaTT1,MaTT2,TGBD)
+values
+(4,39,40,'2020/10/11'),
+(4,40,41,'2020/10/11'),
+(4,39,41,'2020/10/11'),
+(4,41,42,'2020/10/11'),
+(4,43,39,'2020/10/11'),
+(4,40,42,'2020/10/11'),
+(4,43,42,'2020/10/11'),
+(4,41,40,'2020/10/11'),
+(4,42,39,'2020/10/11'),
+(4,41,43,'2020/10/11')
+
+SELECT * FROM GIAIDAU
+SELECT * FROM BANGDIEM WHERE MaGD=5
+INSERT INTO TRANDAU(MaGD,MaTT1,MaTT2,TGBD)
+values
+(5,42,40,'2020/11/11'),
+(5,40,42,'2020/11/11'),
+(5,42,46,'2020/11/11'),
+(5,46,42,'2020/11/11'),
+(5,46,47,'2020/11/11'),
+(5,47,46,'2020/11/11'),
+(5,47,42,'2020/11/11'),
+(5,42,47,'2020/11/11'),
+(5,40,46,'2020/11/11'),
+(5,40,47,'2020/11/11')
+
+SELECT * FROM GIAIDAU
+SELECT * FROM BANGDIEM WHERE MaGD=6
+INSERT INTO TRANDAU(MaGD,MaTT1,MaTT2,TGBD)
+values
+(6,44,45,'2020/10/20'),
+(6,45,44,'2020/11/11'),
+(6,46,45,'2020/11/11'),
+(6,45,46,'2020/11/11'),
+(6,47,46,'2020/11/11'),
+(6,46,47,'2020/11/11'),
+(6,48,47,'2020/11/11'),
+(6,47,48,'2020/11/11'),
+(6,44,46,'2020/11/11'),
+(6,48,45,'2020/11/11')
+
+
+
+--TRỊNH HIẾU------------------------------------------------------
 --Trigger
 --Triger
 /*C1:Không cho xóa các trận đấu đã có kq*/
@@ -117,7 +216,7 @@ begin
 		rollback tran
 	End Catch
 end
-
+drop trigger tt_xoa
 
 /*C4: Không cho phép thêm trận đấu lệch thời gian giải đấu hoặc chứa tuyển thủ chưa đăng ký giải đấu*/
 Create trigger td_them
@@ -142,7 +241,7 @@ begin
 	end
 	
 end
-
+drop trigger td_them
 
 /*C5: Không cho phép sửa trận đấu lệch thời gian giải đấu hoặc chứa tuyển thủ chưa đăng ký giải đấu*/
 Create trigger td_sua2
@@ -166,7 +265,7 @@ begin
 		rollback tran
 	end
 end
-
+drop trigger td_sua2
 /*C6: Không cho 1 tuyển thủ đăng ký các giải đấu trùng thời gian*/
 Create trigger bd_them
 on BANGDIEM for insert
@@ -408,3 +507,7 @@ Begin
 end
 
 exec tt_thongke3 30
+--HẾT ------------- TRỊNH HIẾU------------------------------------------------------
+
+
+
