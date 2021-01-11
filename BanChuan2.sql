@@ -45,7 +45,7 @@ CREATE TABLE TRANDAU
 
 ALTER TABLE dbo.TRANDAU ADD DEFAULT N'-1' FOR Kq;
 ALTER TABLE dbo.GIAIDAU ADD DEFAULT 32 FOR TongTran;
-
+ALTER TABLE TUYENTHU ADD UNIQUE (username)
 USE QLGD;
 CREATE TABLE BANGDIEM
 (
@@ -66,204 +66,108 @@ ALTER TABLE BANGDIEM ADD DEFAULT 0 FOR TranThua;
 ALTER TABLE BANGDIEM ADD DEFAULT 0 FOR TranHoa;
 ALTER TABLE BANGDIEM ADD DEFAULT 0 FOR HieuSo;
 ALTER TABLE BANGDIEM ADD DEFAULT 0 FOR Diem;
-/*USE QLGD
-CREATE TABLE ACCOUNT
-(
-	Id int identity(1,1) PRIMARY KEY,
-	
-	gold int default 10000
-)
-*/
-INSERT INTO dbo.TUYENTHU
-(
-    Ten,
-	NgaySinh,
-	HeSo,
-	QuocGia,
-	username,
-	pass,
-	email,
-	role
-)
-VALUES
-(   N'Lê Văn B',       -- TenTT - nvarchar(41)
-    GETDATE(), -- NgaySinh - date
-    300,       -- HsElo - float
-    N'Hải Phòng',        -- Que - nvarchar(50)
-	'hieus207',
-	'hieu123',
-	'hieutr@gmail.com',
-	2
-    ),(
-		N'Nguyễn Cuốc Huy',       -- TenTT - nvarchar(41)
-    GETDATE(), -- NgaySinh - date
-    300,       -- HsElo - float
-    N'Hải Phòng',
-	'huyhayho',
-	'huy123',
-	'huytrk@gm.com',
-	1
-	)
 
-INSERT INTO dbo.GIAIDAU
-(
-	TenGD,
-	DiaDiem,
-	TGBatDau,
-	TGKetThuc,
-	TongTran,
-	TongTT
-)
-VALUES
-(   N'Bích Quế Viên Bôi',       -- TenGD - nvarchar(30)
-    N'Trung Của',       -- DiaDiem - nvarchar(30)
-    GETDATE(), -- TGBatDau - date
-    GETDATE(),  -- TGKetThuc - date
-	32,
-	8
-)
 
-INSERT INTO dbo.TRANDAU
-(
-    MaGD,
-    MaTT1,
-    MaTT2,
-    TGBD
-)
-VALUES
-(   2,         -- MaGD - int
-    5,         -- MaTT1 - int
-    9,         -- MaTT2 - int
-    '2020/12/07' -- TGBD - datetime
-)
 
-insert into BANGDIEM
-(
-	MATT,
-	TranThang,
-	TranThua,
-	TranHoa,
-	HieuSo,
-	Diem,
-	MaGD
-)
+/*THÊM DỮ LIỆU*/
+USE QLGD
+
+select * from TUYENTHU
+INSERT INTO TUYENTHU(Ten,NgaySinh,HeSo,QuocGia,username,email,pass,role)
+values('Admin','2000/11/27','999999','VN','admin','admin@admin.com','admin',2)
+INSERT INTO TUYENTHU(Ten,NgaySinh,HeSo,QuocGia,username,email,pass)
+values(N'Trần Văn C','2000/11/10','300','VN','tranvanc','tranvanc@gm.com','hieu123'),
+(N'Hoàng Trung D','2000/12/12','300','VN','hoangD','hoangD@gm.com','hieu123'),
+(N'Lâm Văn E','2000/09/17','300','VN','lamvanE','lamvanE@gm.com','hieu123'),
+(N'Nguyễn Thị F','2000/07/12','300','VN','nguyenthiF','nguyenf20@gm.com','hieu123'),
+(N'Phan Văn G','2000/04/07','300','VN','phanvanG','phanvanG@gm.com','hieu123'),
+(N'Trịnh Gia H','2000/06/16','300','VN','trinhGH','trinhGH@gm.com','hieu123'),
+(N'Vũ Hoàng K','2000/05/13','300','VN','vuhoangK','vuhoangK@gm.com','hieu123'),
+(N'Bùi Trung L','2000/07/21','300','VN','buitrungL','buitrungL@gm.com','hieu123'),
+(N'Nguyễn Văn M','2000/10/10','300','VN','NguyenVanM','tranvanc@gm.com','hieu123'),
+(N'Lê Bá N','2000/12/25','300','VN','lebaN','lebaN29@gm.com','hieu123')
+
+
+--*********-------------------------------------------------------------------******CẦN SỬA ID GIẢI ĐẤU,ID TUYỂN THỦ
+select * from GIAIDAU
+delete from GIAIDAU
+INSERT INTO GIAIDAU(TenGD,DiaDiem,TGBatDau,TGKetThuc,TongTran,TongTT)
+values(N'Bích Quế viên bôi 2',N'Hà Nam','2020/10/10','2020/11/08',20,6),
+(N'Tài Năng Đất Việt 2',N'Hà Nam','2020/11/10','2020/12/10',20,6),
+(N'Trạng Cờ Tý Quỵ 2',N'Hà Nam','2020/10/20','2020/11/20',20,6)
+
+INSERT INTO BANGDIEM(MaGD,MATT)
 values
-(
-	1,
-	1,
-	0,
-	1,
-	1,
-	3,
-	1
-),(
-	2,
-	0,
-	1,
-	1,
-	1,
-	1,
-	1
-)
+(4,39),
+(4,40),
+(4,41),
+(4,42),
+(4,43)
+
+select * from BANGDIEM
+INSERT INTO BANGDIEM(MaGD,MATT)
+values
+(5,40),
+(5,42),
+(5,46),
+(5,47),
+(5,44)
+INSERT INTO BANGDIEM(MaGD,MATT)
+values
+(6,44),
+(6,45),
+(6,46),
+(6,47),
+(6,48)
+
+SELECT * FROM GIAIDAU
+SELECT * FROM BANGDIEM WHERE MaGD=4
+INSERT INTO TRANDAU(MaGD,MaTT1,MaTT2,TGBD)
+values
+(4,39,40,'2020/10/11'),
+(4,40,41,'2020/10/11'),
+(4,39,41,'2020/10/11'),
+(4,41,42,'2020/10/11'),
+(4,43,39,'2020/10/11'),
+(4,40,42,'2020/10/11'),
+(4,43,42,'2020/10/11'),
+(4,41,40,'2020/10/11'),
+(4,42,39,'2020/10/11'),
+(4,41,43,'2020/10/11')
+
+SELECT * FROM GIAIDAU
+SELECT * FROM BANGDIEM WHERE MaGD=5
+INSERT INTO TRANDAU(MaGD,MaTT1,MaTT2,TGBD)
+values
+(5,42,40,'2020/11/11'),
+(5,40,42,'2020/11/11'),
+(5,42,46,'2020/11/11'),
+(5,46,42,'2020/11/11'),
+(5,46,47,'2020/11/11'),
+(5,47,46,'2020/11/11'),
+(5,47,42,'2020/11/11'),
+(5,42,47,'2020/11/11'),
+(5,40,46,'2020/11/11'),
+(5,40,47,'2020/11/11')
+
+SELECT * FROM GIAIDAU
+SELECT * FROM BANGDIEM WHERE MaGD=6
+INSERT INTO TRANDAU(MaGD,MaTT1,MaTT2,TGBD)
+values
+(6,44,45,'2020/10/20'),
+(6,45,44,'2020/11/11'),
+(6,46,45,'2020/11/11'),
+(6,45,46,'2020/11/11'),
+(6,47,46,'2020/11/11'),
+(6,46,47,'2020/11/11'),
+(6,48,47,'2020/11/11'),
+(6,47,48,'2020/11/11'),
+(6,44,46,'2020/11/11'),
+(6,48,45,'2020/11/11')
 
 
-update TUYENTHU set role=2 WHERE MaTT=1
-INSERT INTO GIAIDAU ( TenGD, DiaDiem, TGBatDau, TGKetThuc, TongTran ) VALUES (null,null,'2020/10/10','2020/10/10', 32)
 
-use QLGD
-create procedure BangXH
-update GIAIDAU SET TenGD='Abdc', DiaDiem='def', TGBatDau='2012/12/02', TGKetThuc='2012/12/10', TongTran='32',TongTT='10' WHERE MaGD='1';
-
-update GIAIDAU SET 
-                TenGD='Abcd',
-                DiaDiem='def', 
-                TGBatDau='2012-12-02', 
-                TGKetThuc='2012-12-10', 
-                TongTran='32',
-                TongTT='TongTT' 
-            WHERE MaGD='2';
-
-INSERT INTO TUYENTHU
-(
-    Ten,
-    NgaySinh,
-    HeSo,
-    QuocGia,
-    username,
-    pass,
-    email
-)
-VALUES
-(   N'Hieu',
-    '2000/11/27',
-    '300',
-    N'VN',
-    'hieu2000',
-    'hieu123',
-    'hieusO@gmai.cokl'
-)
-
-
-INSERT INTO BANGDIEM
-(
-    MaGD,
-    MaTT
-)
-VALUES
-(
-    '1',
-    '1'
-)
---PROCEDURE--------------
-/* Thủ tục thống kê 10 trận gần nhất của 2 tuyển thủ*/
-CREATE PROCEDURE tt_thongke @MaTT1 int,@MaTT2 int
-AS
-Begin
-	select TOP 10 * from TRANDAU where (MaTT1=@MaTT1 OR MaTT1=@MaTT2) AND (MaTT2=@MaTT1 OR MaTT2=@MaTT2) AND (Kq!=-1) ORDER BY TGBD DESC
-end
-
-drop procedure tt_thongke
-exec tt_thongke 5,9
-/* Thủ tục thống kê 10 tuyển thủ thắng nhiều nhất*/
-CREATE PROCEDURE tt_thongke2
-AS
-Begin
-	select TOP 10 Kq,Count(Kq) as NumWin from TRANDAU WHERE (Kq!=0) And (Kq!=-1) GROUP BY Kq ORDER BY Count(Kq) DESC 
-end
-
-drop procedure tt_thongke3
-/* Thủ tục đưa ra danh sách 10 tuyển thủ dưới số tuổi nhập vào có nhiều trận thắng nhất*/
-CREATE PROCEDURE tt_thongke3 @tuoi int
-AS
-Begin
-	Select TOP 10 tt.MaTT,tt.Ten,Count(td.Kq) as Thang from TUYENTHU as tt,TRANDAU as td WHERE @tuoi>=(YEAR(GETDATE())-YEAR(tt.NgaySinh)) and ((tt.MaTT=td.MaTT1 and td.Kq=tt.MaTT) or (tt.MaTT=td.MaTT2 and td.Kq=tt.MaTT)) and(td.Kq!=-1 and td.Kq!=0) group by tt.MaTT,tt.Ten ORDER BY Thang DESC
-end
-
-exec tt_thongke2
-exec tt_thongke3 30
-
---Tạo một thủ tục đưa ra danh sách các tuyển thủ đã có 3 trận thắng trong một giải đấu bất kì
-create procedure ds_tuyenthu @maGD nvarchar(30)
-as 
-begin
-select BANGDIEM.MaGD ,TUYENTHU.MaTT ,TUYENTHU.Ten ,TUYENTHU.QuocGia from BANGDIEM 
-inner join TUYENTHU on BANGDIEM.MaTT=TUYENTHU.MaTT
-Where BANGDIEM.MaGD =@maGD and
-BANGDIEM.TranThang >=3
-end
---drop procedure ds_tuyenthu
-
-exec dbo.ds_tuyenthu @maGD=1
---Viết một thủ tục hiển thị ra danh sách tuyển thủ của một giải đấu nào đó
-create procedure ds_tt_gd @magd int
-as
-begin
-select BANGDIEM.MATT,TUYENTHU.Ten ,TUYENTHU.QuocGia from BANGDIEM inner join GIAIDAU on BANGDIEM.MaGD = GIAIDAU.MaGD
-inner join TUYENTHU on BANGDIEM.MATT = TUYENTHU.MaTT
-Where GIAIDAU.MaGD =@magd
-end
---drop procedure ds_tt_gd
-exec ds_tt_gd @magd =1
+--TRỊNH HIẾU------------------------------------------------------
 --Trigger
 --Triger
 /*C1:Không cho xóa các trận đấu đã có kq*/
@@ -312,7 +216,7 @@ begin
 		rollback tran
 	End Catch
 end
-
+drop trigger tt_xoa
 
 /*C4: Không cho phép thêm trận đấu lệch thời gian giải đấu hoặc chứa tuyển thủ chưa đăng ký giải đấu*/
 Create trigger td_them
@@ -337,7 +241,7 @@ begin
 	end
 	
 end
-
+drop trigger td_them
 
 /*C5: Không cho phép sửa trận đấu lệch thời gian giải đấu hoặc chứa tuyển thủ chưa đăng ký giải đấu*/
 Create trigger td_sua2
@@ -361,8 +265,8 @@ begin
 		rollback tran
 	end
 end
-
-/*C6: ERROR Không cho 1 tuyển thủ đăng ký các giải đấu trùng thời gian*/
+drop trigger td_sua2
+/*C6: Không cho 1 tuyển thủ đăng ký các giải đấu trùng thời gian*/
 Create trigger bd_them
 on BANGDIEM for insert
 as
@@ -370,14 +274,15 @@ begin
 	declare @tgbdGD date,@tgktGD date,@tgTD date,@maGD int,@MaTT int;
 	set @maGD = (select MaGD from inserted)
 	set @MaTT = (select MATT from inserted)
+
 	set @tgbdGD=(select TGBatDau From GIAIDAU Where MaGD=@maGD)
 	set @tgktGD=(select TGKetThuc From GIAIDAU Where MaGD=@maGD)
+
 	declare @sl int
 	set @sl=0
-	set @sl=(select count(MaGD) from GIAIDAU where MaGD=@maGD and ( (TGBatDau>=@tgbdGD)AND(TGBatDau<=@tgktGD)) OR ((TGBatDau<=@tgbdGD)AND(TGKetThuc>=@tgbdGD)) AND MaGD in (select MaGD from BANGDIEM where MATT=@MaTT and MaGD=@maGD))
+	set @sl = (select count(gd.MaGD) from GIAIDAU as gd,BANGDIEM as bd where (gd.MaGD=bd.MaGD) and (bd.MATT=@MaTT) and (((gd.TGBatDau>=@tgbdGD)AND(gd.TGBatDau<=@tgktGD)) OR ((gd.TGBatDau<=@tgbdGD)AND(gd.TGKetThuc>=@tgbdGD))) and(gd.MaGD!=@maGD))
 	if(@sl>0)
 	begin
-		set @maGD=(select MaGD from BANGDIEM where MATT=@MaTT and MaGD in(Select MaGD From GIAIDAU WHERE ( (TGBatDau>=@tgbdGD)AND(TGBatDau<=@tgktGD)) OR ((TGBatDau<=@tgbdGD)AND(TGKetThuc>=@tgbdGD))))
 		print @MaTT
 		print @tgbdGD
 		print @tgktGD
@@ -388,16 +293,9 @@ begin
 	end
 end
 
-drop trigger bd_them
-/* Lỗi trigger ko rõ lý do
-test
-USE QLGD
 
-GO
-declare @sl int
-set @sl=(select count(MaGD) from BANGDIEM where MATT=6 and MaGD in(Select MaGD From GIAIDAU WHERE ( (TGBatDau>='2020/11/27')AND(TGBatDau<='2020/12/27')) OR ((TGBatDau<='2020/11/27')AND(TGKetThuc>='2020/11/27'))))
-print @sl
-*/
+drop trigger bd_them
+
 
 /*C7:Không cho sửa thời gian giải đấu*/
 
@@ -416,7 +314,6 @@ if ((@tgbd!=@tgbd2)or(@tgkt!=@tgkt2))
 		rollback tran
 	end
 end
-
 
 drop trigger gd_sua2
 
@@ -494,8 +391,6 @@ Create trigger td_kq
 	end catch
 end
 
-update TRANDAU set Kq='5' where MaTD='38'
-select * from BANGDIEM
 drop trigger td_kq
 
 -- VIEW-----------------------
@@ -505,18 +400,19 @@ as
 select tt2.MaTT,tt2.Ten,(YEAR(GETDATE())-YEAR(tt2.NgaySinh)) as tuoi,tt2.HeSo,dt.Win from TUYENTHU as tt2,(select TOP 20 tt.MaTT,Count(Kq) as Win from TUYENTHU as tt,TRANDAU as td Where td.Kq=tt.MaTT GROUP BY MaTT ORDER BY Count(Kq) DESC)as dt where tt2.MaTT=dt.MaTT
 
 select * from BXH
-
+drop view BXH
 /*Tạo view BXH 10 tuyển thủ thua nhiều nhất và số trận thua*/
 create view BXH_Thua
 as
 Select TOP 10 tt.MaTT,tt.Ten,Count(td.Kq) as Thua from TUYENTHU as tt,TRANDAU as td WHERE ((tt.MaTT=td.MaTT1 and td.Kq<>tt.MaTT) or (tt.MaTT=td.MaTT2 and td.Kq<>tt.MaTT)) and(td.Kq!=-1 and td.Kq!=0) group by tt.MaTT,tt.Ten
-select * from BXH_Thua
 
+
+select * from BXH_Thua
 drop view BXH_Thua
 
 
 --FUNCTION---------
-/*Viết một hàm để tính tỷ lệ thắng của 1 tt bất kỳ*/
+/*Viết một hàm để tính tỷ lệ thắng của 1 tt bất kỳ trong toàn giải đấu*/
 Create function tt_tilewin1(@MaTT int)
 Returns float
 As
@@ -524,10 +420,13 @@ Begin
 	declare @tile float,@sum float,@win float
 	set @sum= (select count(MaTD) From TRANDAU Where MaTT1=@MaTT or MaTT2=@MaTT)
 	set @win= (select count(MaTD) From TRANDAU Where Kq=@MaTT)
+	if(@sum!=0)
 	set @tile=(@win/@sum)*100
+	else set @tile=0.5
 	return @tile
 End
-
+drop function tt_tilewin1
+select dbo.tt_tilewin1('2')as tilewin
 
 /*Viết một hàm để tính tỷ lệ thắng của 1 td bất kỳ tra ve ti le thang cua tt 1*/
 Create function td_tilewin(@MaTD int)
@@ -555,7 +454,7 @@ Begin
 	return @tile
 End
 
-select dbo.tt_tilewin1('9')as tilewin
+select dbo.td_tilewin('5')
 
 /*Hàm đưa ra thông tin chi tiết 1 trận đấu và tỉ lệ thắng*/
 CREATE FUNCTION td_tt (@MaTD int)
@@ -575,109 +474,40 @@ BEGIN
     INSERT INTO @new_table VALUES (@MaTD,@matt1,@ten1,@matt2,@ten2,@tg,@winner,@tile)
     RETURN
 END
+select * from td_tt('5')
 
 drop function td_tt
-select * from td_tt('34')
 
-
-
-
--- Viết hàm trả về danh sách các tuyển thủ có hiệu số >=2 của 1 giải đấu bất kì
-create function ds_tt_hs ( @magd int)
-returns @dstt TABLE (MaTT int ,Ten nvarchar(30) ,QuocGia nvarchar(30) ,NgaySinh date)
-as
-begin
-insert into @dstt
-Select TUYENTHU.MaTT,TUYENTHU.Ten,TUYENTHU.QuocGia,TUYENTHU.NgaySinh from TUYENTHU inner join BANGDIEM on TUYENTHU.MaTT=BANGDIEM.MaTT
-where BANGDIEM.MaGD =@magd
-and BANGDIEM.HieuSo >=2
-return
-end
-select * from ds_tt_hs(1)
--- Viết hàm trả về tuổi trung bình của các tuyển thủ trong một giải đấu
-create function tuoi_tb (@magd int)
-returns float
-as
-begin
-declare @tuoitb float
-select @tuoitb =Avg(datediff (Year,getdate(),TUYENTHU.NgaySinh)) from BANGDIEM
-inner join TUYENTHU on TUYENTHU.MaTT=BANGDIEM.MaTT
-inner join GIAIDAU on BANGDIEM.MaGD=GIAIDAU.MaGD
-where GIAIDAU.MaGD=@magd
-return @tuoitb
-end
-print( dbo.tuoi_tb(1))
---drop function tuoi_tb
--- Tạo view hiển  thị mã tuyển thủ,tên tuyển thủ,quốc gia ,ngày dinh ,Diem trong  giải đấu
-create view viewTT(MaTT,Ten,QuocGia,NgaySinh,Diem)
-as
-select TUYENTHU.MaTT,TUYENTHU.Ten,TUYENTHU.QuocGia,TUYENTHU.NgaySinh,BANGDIEM.Diem from TUYENTHU
-inner join BANGDIEM on TUYENTHU.MaTT=BANGDIEM.MaTT
-use QLGD
-select * from viewTT
--- Tạo view hiển thị mã giải đấu , tên tuyển thủ  , quốc gia số trận thắng , số trận hòa , số trận thua , hiệu số , điểm số của các tuyển thủ tham gia vào giải đấu
-create view viewGD (MaGD,TenTT,QuocGia,TranThang,TranHoa,TranThua,Hieuso,Diem)
-as
-select BANGDIEM.MaGD,TUYENTHU.Ten,TUYENTHU.QUOCGIA,BANGDIEM.TranThang,BANGDIEM.TranHoa,BANGDIEM.TranThua,BANGDIEM.HieuSo,BANGDIEM.Diem from TUYENTHU
-inner join BANGDIEM on TUYENTHU.MaTT=BANGDIEM.MaTT
-
-
---drop view viewGD ,
-select * from viewGD
-
---Tạo trigger ktra nếu giải đấu có số tuyển thủ tham gia đã đủ thì không cho phép thêm tuyển thủ vào giải đấu nữa
-create view TT_GD
-as
-select BANGDIEM.MaTT,GIAIDAU.TongTT,GIAIDAU.MaGD from GIAIDAU inner join BANGDIEM on BANGDIEM.MaGD=GIAIDAU.MaGD 
-select * from TT_GD
-drop view TT_GD
-create trigger ktra_sl_tt
-on BANGDIEM
-for insert
-as
-declare @sltt int
-declare @ttdk int
-set @sltt = (select TongTT from TT_GD group by TongTT)
-set @ttdk =( select count(MaTT)from TT_GD)
-if(@ttdk>=@sltt)
-begin
-print('Giải đấu đã đủ tuyển thủ tham gia')
-rollback tran
-end
-drop trigger ktra_sl_tt
-select * from GIAIDAU
-
-
--- Tạo trigger sao cho khi xóa 1 giải đấu trong bảng giải đấu , thì thông tin về bảng điểm của giải đấu đó cũng bị xóa
-create trigger xoa_gd 
-on GIAIDAU
-FOR DELETE
+--PROCEDURE--------------
+/* Thủ tục thống kê 10 trận gần nhất của 2 tuyển thủ*/
+CREATE PROCEDURE tt_thongke @MaTT1 int,@MaTT2 int
 AS
-BEGIN
-DELETE FROM BANGDIEM
-WHERE MaGD= (select MaGD from DELETED)
-PRINT N'Xóa thành công '
-end
-
-
--- Tạo con trỏ hiển thị danh sách MaGD,TenGD,MaTT,TranThang,TranThua,TranHoa,HieuSo,Diem
-use QLGD
-declare con_tro_GD Cursor
-DYNAMIC SCROLL
-for
-Select BANGDIEM.MaGD,MaTT,TranThang,TranThua,TranHoa,HieuSo,DIEM from BANGDIEM inner join GIAIDAU on BANGDIEM.MaGD=GIAIDAU.MaGD
-Open con_tro_GD;
-declare @MaGD int,@MaTT int ,@TranThang int ,@TranThua int ,@TranHoa int, @HieuSo int ,@Diem int ;
-FETCH NEXT from con_tro_GD into @MaGD,@MaTT,@TranThang,@TranThua,@TranHoa,@HieuSo,@DIEM
-while(@@FETCH_STATUS=0)
 Begin
-print cast ( @MaGD as int)+' '+@MaTT+''+@TranThang+''+@TranThua+''+@TranHoa+''+@HieuSo+''+@DIEM
-FETCH NEXT from con_tro_GD into  @MaGD,@MaTT,@TranThang,@TranThua,@TranHoa,@HieuSo,@DIEM
+	select TOP 10 * from TRANDAU where (MaTT1=@MaTT1 OR MaTT1=@MaTT2) AND (MaTT2=@MaTT1 OR MaTT2=@MaTT2) AND (Kq!=-1) ORDER BY TGBD DESC
 end
-close con_tro_GD;
-DeAllocate con_tro_GD;
 
+drop procedure tt_thongke
 
+exec tt_thongke 3,4
+/* Thủ tục thống kê 10 tuyển thủ thắng nhiều nhất*/
+CREATE PROCEDURE tt_thongke2
+AS
+Begin
+	select TOP 10 Kq,Count(Kq) as NumWin from TRANDAU WHERE (Kq!=0) And (Kq!=-1) GROUP BY Kq ORDER BY Count(Kq) DESC 
+end
+
+drop procedure tt_thongke2
+
+exec tt_thongke2
+/* Thủ tục đưa ra danh sách 10 tuyển thủ dưới số tuổi nhập vào có nhiều trận thắng nhất*/
+CREATE PROCEDURE tt_thongke3 @tuoi int
+AS
+Begin
+	Select TOP 10 tt.MaTT,tt.Ten,Count(td.Kq) as Thang from TUYENTHU as tt,TRANDAU as td WHERE @tuoi>=(YEAR(GETDATE())-YEAR(tt.NgaySinh)) and ((tt.MaTT=td.MaTT1 and td.Kq=tt.MaTT) or (tt.MaTT=td.MaTT2 and td.Kq=tt.MaTT)) and(td.Kq!=-1 and td.Kq!=0) group by tt.MaTT,tt.Ten ORDER BY Thang DESC
+end
+
+exec tt_thongke3 30
+--HẾT ------------- TRỊNH HIẾU------------------------------------------------------
 
 
 
