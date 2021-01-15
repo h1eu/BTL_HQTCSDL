@@ -18,8 +18,8 @@ $('#inp_tilewin1').change(function(){
             "<td>"+response[0]['TenTT2']+"</td>"+
             "<td>"+response[0]['TGBD'].date.slice(0,11)+"</td>"+
             "<td>"+response[0]['Kq']+"</td>"+
-            "<td>"+response[0]['tilewin']+"</td>"+
-            "<td>"+(1-response[0]['tilewin'])+"</td>"
+            "<td>"+response[0]['tilewin'].toFixed(2)+"</td>"+
+            "<td>"+(1-response[0]['tilewin']).toFixed(2)+"</td>"
             +"</tr>")
         }
     })
@@ -42,7 +42,7 @@ $('#inp_tilewin2').change(function(){
             "<td>"+response[0]['Ten']+"</td>"+
             "<td>"+response[0]['HeSo']+"</td>"+
             "<td>"+response[0]['QuocGia']+"</td>"+
-            "<td>"+response[1]['tilewin']+"</td>"
+            "<td>"+response[1]['tilewin'].toFixed(2)+"</td>"
             +"</tr>")
         }
     })

@@ -41,7 +41,7 @@
                 <th>Tên Tuyển Thủ</th>
                 <th>Hệ Số</th>
                 <th>Quốc Gia</th>
-                <th>Tỉ lệ thắng</th>
+                <th>Tỉ lệ thắng (%)</th>
             </tr>
         </thead>
         <tbody id="tilewin2">

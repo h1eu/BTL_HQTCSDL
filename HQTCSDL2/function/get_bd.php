@@ -4,7 +4,7 @@
         if(isset($_POST['MaGD'])){
             global $conn;
             $MaGD=$_POST['MaGD'];
-            $sql="select bd.*,tt.Ten from BANGDIEM as bd,TUYENTHU as tt WHERE bd.MaGD='$MaGD' AND tt.MaTT=bd.MATT ORDER BY Diem DESC";
+            $sql="select bd.*,tt.Ten from BANGDIEM as bd,TUYENTHU as tt WHERE bd.MaGD='$MaGD' AND tt.MaTT=bd.MATT ORDER BY bd.Diem DESC,bd.HieuSo DESC";
             $result=sqlsrv_query($conn,$sql);
             $rs=sqlsrv_fetch_all($result);         
         }

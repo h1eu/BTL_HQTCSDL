@@ -35,8 +35,6 @@
             $result=sqlsrv_query($conn,$sql);
             $rs=sqlsrv_fetch_all($result);    
         }
-
         echo json_encode($rs);
-
         
         

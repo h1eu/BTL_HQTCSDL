@@ -391,6 +391,9 @@ Create trigger td_kq
 	end catch
 end
 
+where
+select * from TUYENTHU tt where tt.MaTT in (select * from TRANDAU td 
+where td.MaTT1 = 44 and td.MaTT2 =45)
 drop trigger td_kq
 
 -- VIEW-----------------------
@@ -522,7 +525,7 @@ BANGDIEM.TranThang >=3
 end
 --drop procedure ds_tuyenthu
 
-exec dbo.ds_tuyenthu @maGD=1
+exec dbo.ds_tuyenthu @maGD=4
 --Viết một thủ tục hiển thị ra danh sách tuyển thủ của một giải đấu nào đó
 create procedure ds_tt_gd @magd int
 as
@@ -532,7 +535,7 @@ inner join TUYENTHU on BANGDIEM.MATT = TUYENTHU.MaTT
 Where GIAIDAU.MaGD =@magd
 end
 --drop procedure ds_tt_gd
-exec ds_tt_gd @magd =1
+exec ds_tt_gd @magd =4
 --FUNCTION
 -- Viết hàm trả về danh sách các tuyển thủ có hiệu số >=2 của 1 giải đấu bất kì
 create function ds_tt_hs ( @magd int)
@@ -558,20 +561,21 @@ inner join GIAIDAU on BANGDIEM.MaGD=GIAIDAU.MaGD
 where GIAIDAU.MaGD=@magd
 return @tuoitb
 end
-print( dbo.tuoi_tb(1))
+select ( dbo.tuoi_tb(4))
 --VIEW
 -- Tạo view hiển  thị mã tuyển thủ,tên tuyển thủ,quốc gia ,ngày dinh ,Diem trong  giải đấu
 create view viewTT(MaTT,Ten,QuocGia,NgaySinh,Diem)
 as
 select TUYENTHU.MaTT,TUYENTHU.Ten,TUYENTHU.QuocGia,TUYENTHU.NgaySinh,BANGDIEM.Diem from TUYENTHU
 inner join BANGDIEM on TUYENTHU.MaTT=BANGDIEM.MaTT
-use QLGD
+
 select * from viewTT
 -- Tạo view hiển thị mã giải đấu , tên tuyển thủ  , quốc gia số trận thắng , số trận hòa , số trận thua , hiệu số , điểm số của các tuyển thủ tham gia vào giải đấu
 create view viewGD (MaGD,TenTT,QuocGia,TranThang,TranHoa,TranThua,Hieuso,Diem)
 as
 select BANGDIEM.MaGD,TUYENTHU.Ten,TUYENTHU.QUOCGIA,BANGDIEM.TranThang,BANGDIEM.TranHoa,BANGDIEM.TranThua,BANGDIEM.HieuSo,BANGDIEM.Diem from TUYENTHU
 inner join BANGDIEM on TUYENTHU.MaTT=BANGDIEM.MaTT
+select * from viewGD
 --TRIGGER
 --C10 Tạo trigger ktra nếu giải đấu có số tuyển thủ tham gia đã đủ thì không cho phép thêm tuyển thủ vào giải đấu nữa
 create view TT_GD

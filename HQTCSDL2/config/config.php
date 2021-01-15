@@ -1,6 +1,6 @@
 <?php
 session_start();
-$serverName = "DESKTOP-A3NO6EJ\HUYNGUYEN";
+$serverName = "DESKTOP-J81PQ6L";
 // Since UID and PWD are not specified in the $connectionInfo array,
 // The connection will be attempted using Windows Authentication.
 $connectionInfo = array( "Database"=>"QLGD","CharacterSet" => "UTF-8");

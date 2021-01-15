@@ -1,8 +1,8 @@
 <?php
-    require_once('../config/config.php');
-        if(isset($_POST['check'])){
+    require_once('../../config/config.php');
+        if(isset($_POST['log'])){
             global $conn;
-            $sql="select * from dbo.viewTT";    
+            $sql="SELECT * FROM CTGD";    
             /*Phai count */
             if($result=sqlsrv_query($conn,$sql))
                 $rs=sqlsrv_fetch_all($result);

@@ -63,6 +63,101 @@ $('#signup').click(function(){
         }
     });
 })
+
+function show_bd(maGD1){
+    $.ajax({
+        url: './function/get_bd.php',
+        type: 'post',
+        data: {
+            MaGD:maGD1
+        },
+        dataType: 'json',
+        success:function(response){
+            $("#bd_body").empty();
+            let action="";
+                for(data of response)
+                {
+                    if($('.bd_table').children().eq(1).children().eq(0).children().eq(0).children().length>7){
+                        action="<td> <button type='button' class='btn btn-primary scboard_del'> Del </button> </td>";
+                    }
+                    $("#bd_body").append("<tr>"+
+                    "<td scope='row'>"+data['MATT']+"</td>"+
+                    "<td>"+data['Ten']+"</td>"+
+                    "<td>"+data['TranThang']+"</td>"+
+                    "<td>"+data['TranThua']+"</td>"+
+                    "<td>"+data['TranHoa']+"</td>"+
+                    "<td>"+data['HieuSo']+"</td>"+
+                    "<td>"+data['Diem']+"</td>"+
+                    action
+                    +"</tr>");
+                }
+            
+            $('.scboard_del').click(function(){
+                let MaTT=$(this).parent().parent().children().eq(0)[0].textContent;
+                if(confirm("Bạn có chắc muốn xóa tuyển thủ này khỏi giải đấu?"))
+                $.ajax({
+                    url: './function/del_tt.php',
+                    type: 'post',
+                    data: {
+                        MaGD:maGD,
+                        MaTT:MaTT
+                    },
+                    dataType: 'json',
+                    success:function(response){
+                        if(response['status']=='success'){
+                            $('.message').text("Xóa tuyển thủ thành công!");
+                            $('.message').show();
+                            setTimeout(function(){
+                                $('.message').hide();
+                            },2000);
+                            show_td(maGD);
+                            show_bd(maGD);
+                        }else{
+                            alert("Xóa thất bại!")
+                        }
+                    }
+                })
+            })
+                
+        }
+    })
+}
+
+function show_td(maGD2){
+    $.ajax({
+        url: './function/get_td.php',
+        type: 'post',
+        data: {
+            MaGD:maGD2
+        },
+        dataType: 'json',
+        success:function(response){
+            $("#td_body").empty();
+            let action="";
+            
+            for(data of response){
+                if($('.td_table').children().eq(3).children().eq(0).children().eq(0).children().length>6){
+                    action="<td> <button type='button' class='btn btn-primary match_edit' onClick=(match_edit("+data['MaGD']+","+data['MaTD']+"))> Edit </button> </td>"+
+                    "<td> <button type='button' class='btn btn-primary match_del' onClick=(match_del("+data['MaTD']+"))> Del </button> </td>";
+                }
+                let winner="Chưa";
+                if(data['Kq']==0) winner="Hòa";
+                if(data['Kq']==data['MaTT1']) winner=data['Ten1'];
+                if(data['Kq']==data['MaTT2']) winner=data['Ten2'];
+                $("#td_body").append("<tr>"+
+                "<td scope='row'>"+data['MaGD']+"</td>"+
+                "<td>"+data['MaTD']+"</td>"+
+                "<td>"+data['Ten1']+"</td>"+
+                "<td>"+data['Ten2']+"</td>"+
+                "<td>"+data['TGBD'].date.slice(0,11)+"</td>"+
+                "<td value='"+data['Kq']+"'>"+winner+"</td>"+
+                action
+                +"</tr>");
+            }
+            
+        }
+    })
+}
 $('.show').click(function(){
     if($(this).val()=="Show"){
         $('.td_table').show();
@@ -70,95 +165,8 @@ $('.show').click(function(){
         $('.show').val('Show');
         $(this).val('Close');
         maGD=$(this).parent().contents()[0].value;
-        $.ajax({
-            url: './function/get_bd.php',
-            type: 'post',
-            data: {
-                MaGD:maGD
-            },
-            dataType: 'json',
-            success:function(response){
-                $("#bd_body").empty();
-                let action="";
-                    for(data of response)
-                    {
-                        if($('.bd_table').children().eq(1).children().eq(0).children().eq(0).children().length>7){
-                            action="<td> <button type='button' class='btn btn-primary scboard_del'> Del </button> </td>";
-                        }
-                        $("#bd_body").append("<tr>"+
-                        "<td scope='row'>"+data['MATT']+"</td>"+
-                        "<td>"+data['Ten']+"</td>"+
-                        "<td>"+data['TranThang']+"</td>"+
-                        "<td>"+data['TranThua']+"</td>"+
-                        "<td>"+data['TranHoa']+"</td>"+
-                        "<td>"+data['HieuSo']+"</td>"+
-                        "<td>"+data['Diem']+"</td>"+
-                        action
-                        +"</tr>");
-                    }
-                
-                $('.scboard_del').click(function(){
-                    let MaTT=$(this).parent().parent().children().eq(0)[0].textContent;
-                    if(confirm("Bạn có chắc muốn xóa tuyển thủ này khỏi giải đấu?"))
-                    $.ajax({
-                        url: './function/del_tt.php',
-                        type: 'post',
-                        data: {
-                            MaGD:maGD,
-                            MaTT:MaTT
-                        },
-                        dataType: 'json',
-                        success:function(response){
-                            if(response['status']=='success'){
-                                $('.message').text("Xóa tuyển thủ thành công!");
-                                $('.message').show();
-                                setTimeout(function(){
-                                    $('.message').hide();
-                                    window.location.reload();
-                                },2000);
-                            }else{
-                                alert("Xóa thất bại!")
-                            }
-                        }
-                    })
-                })
-                    
-            }
-        })
-    
-        $.ajax({
-            url: './function/get_td.php',
-            type: 'post',
-            data: {
-                MaGD:maGD
-            },
-            dataType: 'json',
-            success:function(response){
-                $("#td_body").empty();
-                let action="";
-                
-                for(data of response){
-                    if($('.td_table').children().eq(3).children().eq(0).children().eq(0).children().length>6){
-                        action="<td> <button type='button' class='btn btn-primary match_edit' onClick=(match_edit("+data['MaGD']+","+data['MaTD']+"))> Edit </button> </td>"+
-                        "<td> <button type='button' class='btn btn-primary match_del' onClick=(match_del("+data['MaTD']+"))> Del </button> </td>";
-                    }
-                    let winner="Chưa";
-                    if(data['Kq']==0) winner="Hòa";
-                    if(data['Kq']==data['MaTT1']) winner=data['Ten1'];
-                    if(data['Kq']==data['MaTT2']) winner=data['Ten2'];
-                    $("#td_body").append("<tr>"+
-                    "<td scope='row'>"+data['MaGD']+"</td>"+
-                    "<td>"+data['MaTD']+"</td>"+
-                    "<td>"+data['Ten1']+"</td>"+
-                    "<td>"+data['Ten2']+"</td>"+
-                    "<td>"+data['TGBD'].date.slice(0,11)+"</td>"+
-                    "<td value='"+data['Kq']+"'>"+winner+"</td>"+
-                    action
-                    +"</tr>");
-                }
-                
-            }
-        })
+        show_bd(maGD);
+        show_td(maGD);       
     }
     else{
         $('.td_table').hide();
@@ -254,7 +262,8 @@ $('#create_match').click(function(){
             success:function(response){
                 if(response['status']=='success'){
                     alert("Thêm thành công!")
-                    window.location.reload();
+                    show_bd(maGD);
+                    show_td(maGD); 
                 }
                 else
                 alert("Thêm thất bại! Kiểm tra lại dữ liệu nhập vào.")
@@ -369,7 +378,7 @@ function match_edit(val,MaTD){
             {
                 $('#ed_match_tt1').append("<option id='MaTT1_"+data['MaTT']+"' value='"+data['MaTT']+"'>"+data['Ten']+"</option>");
                 $('#ed_match_tt2').append("<option id='MaTT2_"+data['MaTT']+"' value='"+data['MaTT']+"'>"+data['Ten']+"</option>");
-                $('#ed_match_result').append("<option value='"+data['MaTT']+"'>"+data['Ten']+"</option>")
+               
             }
                
         }
@@ -413,6 +422,8 @@ function match_edit(val,MaTD){
             let MaTT2=response[0]['MaTT2'];
             $('#MaTT1_'+MaTT1).attr('selected','')
             $('#MaTT2_'+MaTT2).attr('selected','')
+            $('#ed_match_result').append("<option value='"+MaTT1+"'>"+$('#ed_match_tt1 option:selected').text()+"</option>")
+            $('#ed_match_result').append("<option value='"+MaTT2+"'>"+$('#ed_match_tt2 option:selected').text()+"</option>")
             $('#ed_match_TS').val(response[0]['TGBD'].date.slice(0,10));
             // $('#ed_match_result').val(response[0]['Kq']);
 
@@ -450,7 +461,8 @@ $('#edit_match').click(function(){
                     $('.message').show();
                     setTimeout(function(){
                         $('.message').hide();
-                        window.location.reload();
+                        show_bd(maGD);
+                        show_td(maGD); 
                     },2500);
                 }
                 else
@@ -474,7 +486,8 @@ function match_del(MaTD){
                 $('.message').show();
                 setTimeout(function(){
                     $('.message').hide();
-                    window.location.reload();
+                    show_bd(maGD);
+                    show_td(maGD); 
                 },2000);
             }else{
                 alert("Xóa thất bại!")
@@ -500,7 +513,8 @@ $('.league_enter').click(function(){
                 $('.message').show();
                 setTimeout(function(){
                     $('.message').hide();
-                    window.location.reload();
+                    show_bd(maGD);
+                    show_td(maGD); 
                 },2500);
             }
             else
