@@ -555,7 +555,7 @@ returns float
 as
 begin
 declare @tuoitb float
-select @tuoitb =Avg(datediff (Year,getdate(),TUYENTHU.NgaySinh)) from BANGDIEM
+select @tuoitb =Avg(datediff (Year,TUYENTHU.NgaySinh,getdate())) from BANGDIEM
 inner join TUYENTHU on TUYENTHU.MaTT=BANGDIEM.MaTT
 inner join GIAIDAU on BANGDIEM.MaGD=GIAIDAU.MaGD
 where GIAIDAU.MaGD=@magd
@@ -611,3 +611,4 @@ WHERE MaGD= (select MaGD from DELETED)
 PRINT N'Xóa thành công '
 end
 
+-- Hết NGUYỄN QUỐC HUY
